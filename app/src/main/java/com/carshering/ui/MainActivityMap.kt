@@ -3,6 +3,7 @@ package com.carshering.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.carshering.R
+import com.carshering.data.ServerRequestDAO
 import com.carshering.data.StartPositionManual
 import com.carshering.databinding.ActivityMainMapBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,6 +23,21 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMainMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initMap()
+        printServerResponseData()
+    }
+
+    private fun printServerResponseData() {
+        val thread = Thread {
+            try {
+                println(ServerRequestDAO().getServerResponseData())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
+    }
+
+    private fun initMap() {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -31,4 +47,5 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback {
         map = googleMap
         map.moveCamera(CameraUpdateFactory.newCameraPosition(startPosition))
     }
+
 }
