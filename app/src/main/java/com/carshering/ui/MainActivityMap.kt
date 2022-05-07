@@ -23,20 +23,6 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
 
         initMap()
-
-        printToCheck()
-    }
-
-    private fun printToCheck() {
-        val thread = Thread {
-            try {
-                val cars = Presenter().initCarsList()
-                cars.forEach { println(it) }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }.start()
-
     }
 
     private fun initMap() {
@@ -48,5 +34,7 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.moveCamera(CameraUpdateFactory.newCameraPosition(startPosition))
+
+        Presenter().initMarkers(map)
     }
 }
