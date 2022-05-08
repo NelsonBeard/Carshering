@@ -11,12 +11,9 @@ class Presenter {
 
     fun initMarkers(googleMap: GoogleMap) {
         val cars = mutableListOf<Car>()
-
-        ServerRequestDAO().execute {
-            val jsonCarArray = it.getJSONArray("cars")
-
-            for (i in 0 until jsonCarArray.length()) {
-                val car = JsonConverterDTO().fromJsonToCar(jsonCarArray.getJSONObject(i))
+        ServerRequestDAO().getJsonArray {
+            for (i in 0 until it.length()) {
+                val car = JsonConverterDTO().fromJsonToCar(it.getJSONObject(i))
                 cars.add(car)
             }
             addMarker(cars, googleMap)

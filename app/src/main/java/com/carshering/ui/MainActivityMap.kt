@@ -37,4 +37,6 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback {
 
         Presenter().initMarkers(map)
     }
+
+
 }
