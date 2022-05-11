@@ -1,6 +1,7 @@
 package com.carshering.ui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.carshering.R
 import com.carshering.data.StartPositionManual
@@ -19,17 +20,17 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View {
     private lateinit var binding: ActivityMainMapBinding
     private val presenter = Presenter()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        presenter.onAttach(this)
         initMap()
     }
 
-    override fun initMap() {
+    private fun initMap() {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -40,8 +41,8 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View {
         map = googleMap
         map.moveCamera(CameraUpdateFactory.newCameraPosition(startPosition))
 
-        val cars = presenter.getCars()
-        putMarks(cars)
+        presenter.requestCars()
+
     }
 
     override fun putMarks(cars: List<Car>) {
@@ -55,5 +56,9 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View {
                     .title(carModel)
             )
         }
+    }
+
+    override fun showErrorToast() {
+        Toast.makeText(this, R.string.error_toast, Toast.LENGTH_SHORT).show()
     }
 }

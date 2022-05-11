@@ -1,53 +1,41 @@
 package com.carshering.data
 
 import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
 import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.CarDAO
-import com.carshering.ui.MainActivityMap
-import java.net.URL
-import java.util.concurrent.Executors
-import javax.net.ssl.HttpsURLConnection
 
+const val CAR_URL =
+    "https://raw.githubusercontent.com/NelsonBeard/CarsheringAPI/master/cars.json"
 
-class CarDAOImpl : CarDAO {
-    private val executor = Executors.newSingleThreadExecutor()
-    private val handler = Handler(Looper.getMainLooper())
+class CarDAOImpl(
+    private val handler: Handler,
+    private val httpClient: HttpClient
+) : CarDAO {
+    private lateinit var cars: List<Car>
 
-    override fun getAllCars(onSuccess: (cars: List<Car>) -> Unit) {
-        executor.execute {
+    override fun getAllCars(
+        onSuccess: (List<Car>) -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        Thread {
             try {
-                handler.post { onSuccess(JsonToCarAdapter().convertJson(getServerResponseData())) }
+                val serverResponseData = httpClient.get(CAR_URL)
+
+                cars = JsonToCarListAdapter(serverResponseData).fromJson()
+                handOverToUIThreadSuccess(onSuccess)
             } catch (error: Exception) {
                 error.printStackTrace()
+                handOverToUIThreadError(onError)
             }
-        }
+        }.start()
     }
 
-    private fun getServerResponseData(): String {
-        val connection = connect()
-        return connection.inputStream.bufferedReader().readText()
+    private fun handOverToUIThreadSuccess(onSuccess: (List<Car>) -> Unit) {
+        handler.post { onSuccess(cars) }
     }
 
-    private fun connect(): HttpsURLConnection {
-        val url = "https://raw.githubusercontent.com/NelsonBeard/CarsheringAPI/master/cars.json"
-        val connection = URL(url).openConnection() as HttpsURLConnection
-
-        try {
-            connection.apply {
-                requestMethod = "GET"
-                setRequestProperty("Content-Type", "application/json; utf-8")
-                connectTimeout = 5000
-            }
-            return connection
-        } catch (error: Exception) {
-            Toast.makeText(MainActivityMap(), "Не удалось загрузить автомобили", Toast.LENGTH_SHORT)
-                .show()
-            throw Exception("No internet connection")
-        } finally {
-            connection.disconnect()
-        }
+    private fun handOverToUIThreadError(onError: (Exception) -> Unit) {
+        handler.post { onError(Exception()) }
     }
 }
 
