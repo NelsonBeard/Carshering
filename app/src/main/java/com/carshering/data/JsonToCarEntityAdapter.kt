@@ -2,22 +2,14 @@ package com.carshering.data
 
 import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.JsonAdapter
+import com.carshering.exception.JsonParseException
 import org.json.JSONObject
 
-class JsonToCarAdapter : JsonAdapter<List<Car>> {
+open class JsonToCarEntityAdapter(
+    private val json: JSONObject
+) : JsonAdapter<Car> {
 
-    override fun convertJson(json: String): List<Car> {
-        val cars = mutableListOf<Car>()
-        val jsonArray = JSONObject(json).getJSONArray("cars")
-
-        for (i in 0 until jsonArray.length()) {
-            val car = convertJson(jsonArray.getJSONObject(i))
-            cars.add(car)
-        }
-        return cars
-    }
-
-    private fun convertJson(json: JSONObject): Car {
+    override fun fromJson(): Car {
         try {
             return Car(
                 id = json.getString("id"),
@@ -32,7 +24,8 @@ class JsonToCarAdapter : JsonAdapter<List<Car>> {
                 lng = json.getJSONObject("location").getDouble("lng")
             )
         } catch (error: Exception) {
-            throw Exception("Can't parse json")
+            throw JsonParseException("Can't parse json")
         }
     }
+
 }
