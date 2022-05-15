@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Carshering</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="error_toast">Не удалось загрузить данные</string>
 </resources>

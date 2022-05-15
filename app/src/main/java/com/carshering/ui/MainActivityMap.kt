@@ -1,20 +1,24 @@
 package com.carshering.ui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.carshering.R
-import com.carshering.data.StartPositionManual
 import com.carshering.databinding.ActivityMainMapBinding
+import com.carshering.domain.entity.Car
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
-class MainActivityMap : AppCompatActivity(), OnMapReadyCallback {
+class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View {
 
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMainMapBinding
-    private val startPosition = StartPositionManual().getStartPosition()
+    private val presenter = Presenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +26,11 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMainMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        presenter.onAttach(this)
+        initMap()
+    }
+
+    private fun initMap() {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -29,6 +38,29 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+
+        presenter.requestStartPosition()
+        presenter.requestCars()
+    }
+
+    override fun putMarkers(cars: List<Car>) {
+        cars.forEach {
+            val latLng = LatLng(it.lat, it.lng)
+            val carModel = it.model
+
+            map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(carModel)
+            )
+        }
+    }
+
+    override fun showErrorToast() {
+        Toast.makeText(this, R.string.error_toast, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun moveCamera(startPosition: CameraPosition) {
         map.moveCamera(CameraUpdateFactory.newCameraPosition(startPosition))
     }
 }
