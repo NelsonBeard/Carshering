@@ -5,7 +5,7 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 class HttpClient {
-    fun get(url:String) :String{
+    fun get(url: String): String {
         val connection = URL(url).openConnection() as HttpsURLConnection
 
         try {

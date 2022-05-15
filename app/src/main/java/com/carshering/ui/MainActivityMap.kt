@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.carshering.R
-import com.carshering.data.StartPositionManual
 import com.carshering.databinding.ActivityMainMapBinding
 import com.carshering.domain.entity.Car
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -37,15 +37,13 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val startPosition = StartPositionManual().getStartPosition()
         map = googleMap
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(startPosition))
 
+        presenter.requestStartPosition()
         presenter.requestCars()
-
     }
 
-    override fun putMarks(cars: List<Car>) {
+    override fun putMarkers(cars: List<Car>) {
         cars.forEach {
             val latLng = LatLng(it.lat, it.lng)
             val carModel = it.model
@@ -60,5 +58,9 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View {
 
     override fun showErrorToast() {
         Toast.makeText(this, R.string.error_toast, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun moveCamera(startPosition: CameraPosition) {
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(startPosition))
     }
 }

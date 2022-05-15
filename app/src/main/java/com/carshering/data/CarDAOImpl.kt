@@ -3,11 +3,13 @@ package com.carshering.data
 import android.os.Handler
 import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.CarDAO
+import java.util.concurrent.Executor
 
 const val CAR_URL =
     "https://raw.githubusercontent.com/NelsonBeard/CarsheringAPI/master/cars.json"
 
 class CarDAOImpl(
+    private val executor: Executor,
     private val handler: Handler,
     private val httpClient: HttpClient
 ) : CarDAO {
@@ -17,7 +19,7 @@ class CarDAOImpl(
         onSuccess: (List<Car>) -> Unit,
         onError: (Exception) -> Unit
     ) {
-        Thread {
+        executor.execute {
             try {
                 val serverResponseData = httpClient.get(CAR_URL)
 
@@ -27,7 +29,7 @@ class CarDAOImpl(
                 error.printStackTrace()
                 handOverToUIThreadError(onError)
             }
-        }.start()
+        }
     }
 
     private fun handOverToUIThreadSuccess(onSuccess: (List<Car>) -> Unit) {

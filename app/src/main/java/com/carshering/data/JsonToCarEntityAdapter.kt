@@ -27,5 +27,4 @@ open class JsonToCarEntityAdapter(
             throw JsonParseException("Can't parse json")
         }
     }
-
 }
