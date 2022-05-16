@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.carshering" >
+    package="com.carshering">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,8 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Carshering" >
-
+        android:theme="@style/Theme.Carshering">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBYGZLkSoJCo4q7DZXUZxlm35CT6RGURio" />
@@ -19,7 +18,7 @@
         <activity
             android:name=".ui.MainActivityMap"
             android:exported="true"
-            android:label="@string/title_activity_maps" >
+            android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
