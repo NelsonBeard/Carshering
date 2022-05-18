@@ -2,8 +2,6 @@ package com.carshering.ui
 
 import android.os.Handler
 import android.os.Looper
-import android.widget.RelativeLayout
-import com.carshering.R
 import com.carshering.data.CarDAOImpl
 import com.carshering.data.HttpClient
 import com.carshering.data.StartPositionManual

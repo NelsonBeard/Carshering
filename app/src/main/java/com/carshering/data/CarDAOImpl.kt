@@ -3,6 +3,7 @@ package com.carshering.data
 import android.os.Handler
 import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.CarDAO
+import java.net.URL
 import java.util.concurrent.Executor
 
 const val CAR_URL =

@@ -1,11 +1,10 @@
 package com.carshering.ui
 
 import android.widget.RelativeLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.carshering.domain.entity.Car
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.Marker
+import java.net.URL
 
 class Contract {
 
@@ -22,6 +21,5 @@ class Contract {
         fun requestCars()
         fun requestStartPosition()
         fun onMarkerClicked(marker: Marker)
-
     }
 }

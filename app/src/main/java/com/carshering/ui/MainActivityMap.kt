@@ -1,10 +1,7 @@
 package com.carshering.ui
 
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.carshering.R
@@ -82,18 +79,19 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
+        carInfo.state = BottomSheetBehavior.STATE_HIDDEN
         presenter.onMarkerClicked(marker)
         return true
     }
 
     override fun updateBottomSheetBehavior(car: Car) {
-        findViewById<TextView>(R.id.car_name).text = car.model
-        findViewById<Chip>(R.id.seats_chip).text = car.seats.toString()
-        findViewById<Chip>(R.id.remain_range_chip).text = car.remainRange.toString()
-        findViewById<Chip>(R.id.color_chip).text = car.color
-        findViewById<Chip>(R.id.transmission_chip).text = car.transmission
-        findViewById<Chip>(R.id.registration_number_chip).text = car.registrationNumber
-        findViewById<ImageView>(R.id.car_picture_image_view).load(car.picture)
         carInfo.state = BottomSheetBehavior.STATE_EXPANDED
+        findViewById<TextView>(R.id.car_name_text_view).text = car.model
+        findViewById<TextView>(R.id.seats_text_view).text = car.seats.toString()
+        findViewById<TextView>(R.id.remain_range_text_view).text = car.remainRange.toString() + " км"
+        findViewById<TextView>(R.id.color_text_view).text = car.color
+        findViewById<TextView>(R.id.transmission_text_view).text = car.transmission
+        findViewById<TextView>(R.id.registration_number_text_view).text = car.registrationNumber
+        findViewById<ImageView>(R.id.car_picture_image_view).load(car.picture)
     }
 }

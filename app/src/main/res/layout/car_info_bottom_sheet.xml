@@ -7,8 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/car_card"
-    android:elevation="8dp"
-    app:behavior_expandedOffset="1dp"
+    android:elevation="@dimen/bottom_sheet_elevation"
     app:behavior_hideable="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     app:layout_constraintStart_toStartOf="parent"
@@ -16,85 +15,90 @@
 
     <View
         android:id="@+id/bottom_sheet_line"
-        android:layout_width="27dp"
-        android:layout_height="3dp"
+        android:layout_width="@dimen/bottom_sheet_line_width"
+        android:layout_height="@dimen/bottom_sheet_line_height"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="11.5dp"
+        android:layout_marginTop="@dimen/bottom_sheet_line_marin_top"
         android:alpha="0.1"
         android:background="@color/bottom_sheet_line_color" />
 
     <TextView
-        android:id="@+id/car_name"
+        android:id="@+id/car_name_text_view"
+        style="@style/car_name_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/bottom_sheet_line"
-        android:layout_marginStart="16dp"
-        android:fontFamily="@font/roboto_bold"
-        android:textColor="@color/bottom_sheet_car_name_text_color"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        tools:text="Renault Arkana" />
+        android:layout_marginStart="@dimen/first_bottom_sheet_views_margin_start"
+        android:layout_marginTop="@dimen/car_name_text_view_margin_top"
+        tools:text="@string/car_name_tool_text" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/remain_range_chip"
+    <TextView
+        android:id="@+id/remain_range_text_view"
+        style="@style/text_view_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/car_name"
+        android:layout_below="@id/car_name_text_view"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_toStartOf="@+id/seats_chip"
-        app:chipCornerRadius="12dp"
-        tools:text="100км" />
+        android:layout_marginStart="@dimen/first_bottom_sheet_views_margin_start"
+        android:background="@drawable/remain_range_text_view_background"
+        android:fallbackLineSpacing="true"
+        app:drawableStartCompat="@drawable/ic_remain_range"
+        tools:text="@string/remain_range_tool_text" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/seats_chip"
+    <TextView
+        android:id="@+id/seats_text_view"
+        style="@style/text_view_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/car_name"
-        android:layout_marginHorizontal="10dp"
-        android:layout_toStartOf="@+id/color_chip"
-        app:chipCornerRadius="12dp"
-        tools:text="5" />
+        android:layout_below="@id/car_name_text_view"
+        android:layout_marginHorizontal="@dimen/seats_text_view_margin_horizontal"
+        android:layout_toEndOf="@id/remain_range_text_view"
+        android:background="@drawable/seats_text_view_background"
+        app:drawableStartCompat="@drawable/ic_seats"
+        tools:text="@string/seats_tool_text" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/color_chip"
+    <TextView
+        android:id="@+id/color_text_view"
+        style="@style/text_view_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/car_name"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="140dp"
-        app:chipCornerRadius="12dp"
-        tools:text="Красный" />
+        android:layout_below="@id/car_name_text_view"
+        android:layout_toEndOf="@id/seats_text_view"
+        android:background="@drawable/color_text_view_background"
+        app:drawableStartCompat="@drawable/ic_color"
+        tools:text="@string/color_tool_text" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/transmission_chip"
+    <TextView
+        android:id="@+id/transmission_text_view"
+        style="@style/text_view_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/remain_range_chip"
+        android:layout_below="@id/remain_range_text_view"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:clickable="false"
-        app:chipCornerRadius="12dp"
-        tools:text="Автоматическая" />
+        android:layout_marginStart="@dimen/first_bottom_sheet_views_margin_start"
+        android:background="@drawable/transmission_text_view_background"
+        app:drawableStartCompat="@drawable/ic_transmission"
+        tools:text="@string/transmission_tool_text" />
 
     <ImageView
         android:id="@+id/car_picture_image_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/transmission_chip"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/car_picture_default" />
+        android:layout_below="@id/transmission_text_view"
+        android:layout_margin="@dimen/car_picture_image_view_margin"
+        android:background="@drawable/car_picture_image_view_background"
+        android:contentDescription="@string/car_picture_description" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/registration_number_chip"
+    <TextView
+        android:id="@+id/registration_number_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/car_name"
+        android:layout_below="@id/car_name_text_view"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="220dp"
-        android:layout_marginEnd="34dp"
-        app:chipCornerRadius="12dp"
-        tools:text="A000AAA777" />
+        android:layout_marginTop="@dimen/registration_number_text_view_margin_top"
+        android:layout_marginEnd="@dimen/registration_number_text_view_margin_end"
+        android:background="@drawable/registration_number_text_view_background"
+        android:gravity="center"
+        tools:text="@string/registration_number_tool_text" />
 
 </RelativeLayout>
