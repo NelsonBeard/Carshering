@@ -2,9 +2,7 @@ package com.carshering.ui
 
 import android.os.Handler
 import android.os.Looper
-import com.carshering.data.CarDAOImpl
-import com.carshering.data.HttpClient
-import com.carshering.data.StartPositionManual
+import com.carshering.data.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import java.util.concurrent.Executors
@@ -54,5 +52,15 @@ class Presenter : Contract.Presenter {
                 //Nothing to do
             }
         )
+    }
+
+    override fun translateCarColor(colorENUM: String) {
+        val colorRussian = colorsMap.getOrDefault(colorENUM, " ")
+        view?.setCarColor(colorRussian)
+    }
+
+    override fun translateCarTransmission(transmissionENUM: String) {
+        val transmissionRussian = transmissionsMap.getOrDefault(transmissionENUM, " ")
+        view?.setCarTransmission(transmissionRussian)
     }
 }

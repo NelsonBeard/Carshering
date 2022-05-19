@@ -1,9 +1,10 @@
 package com.carshering.ui
 
 import android.os.Bundle
-import android.widget.*
+import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import coil.load
 import com.carshering.R
 import com.carshering.databinding.ActivityMainMapBinding
 import com.carshering.domain.entity.Car
@@ -16,7 +17,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.chip.Chip
 
 class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
     GoogleMap.OnMarkerClickListener {
@@ -88,10 +88,30 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         carInfo.state = BottomSheetBehavior.STATE_EXPANDED
         findViewById<TextView>(R.id.car_name_text_view).text = car.model
         findViewById<TextView>(R.id.seats_text_view).text = car.seats.toString()
-        findViewById<TextView>(R.id.remain_range_text_view).text = car.remainRange.toString() + " км"
-        findViewById<TextView>(R.id.color_text_view).text = car.color
-        findViewById<TextView>(R.id.transmission_text_view).text = car.transmission
-        findViewById<TextView>(R.id.registration_number_text_view).text = car.registrationNumber
-        findViewById<ImageView>(R.id.car_picture_image_view).load(car.picture)
+        findViewById<TextView>(R.id.remain_range_text_view).text =
+            car.remainRange.toString() + " км"
+
+        setCarPicture(
+            findViewById(R.id.car_picture_image_view),
+            findViewById(R.id.shimmer_image_view),
+            findViewById(R.id.shimmer_frame_layout),
+            car.picture
+        )
+
+        setRegistrationNumber(
+            findViewById(R.id.registration_number_text_view),
+            car.registrationNumber
+        )
+
+        presenter.translateCarColor(car.color)
+        presenter.translateCarTransmission(car.transmission)
+    }
+
+    override fun setCarColor(colorRussian: String) {
+        findViewById<TextView>(R.id.color_text_view).text = colorRussian
+    }
+
+    override fun setCarTransmission(transmissionRussian: String) {
+        findViewById<TextView>(R.id.transmission_text_view).text = transmissionRussian
     }
 }

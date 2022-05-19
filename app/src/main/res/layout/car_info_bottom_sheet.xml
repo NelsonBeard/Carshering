@@ -6,7 +6,7 @@
     android:id="@+id/car_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/car_card"
+    android:background="@drawable/bottom_sheet_background"
     android:elevation="@dimen/bottom_sheet_elevation"
     app:behavior_hideable="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
@@ -80,17 +80,31 @@
         app:drawableStartCompat="@drawable/ic_transmission"
         tools:text="@string/transmission_tool_text" />
 
-    <ImageView
-        android:id="@+id/car_picture_image_view"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/transmission_text_view"
-        android:layout_margin="@dimen/car_picture_image_view_margin"
-        android:background="@drawable/car_picture_image_view_background"
-        android:contentDescription="@string/car_picture_description" />
+        android:layout_below="@id/transmission_text_view">
+
+        <ImageView
+            android:id="@+id/shimmer_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="182dp"
+            android:layout_margin="@dimen/car_picture_image_view_margin"
+            android:background="@color/shimmer_background_color" />
+
+        <ImageView
+            android:id="@+id/car_picture_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="182dp"
+            android:layout_margin="@dimen/car_picture_image_view_margin"
+            android:contentDescription="@string/car_picture_description"
+            android:visibility="gone" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <TextView
         android:id="@+id/registration_number_text_view"
+        style="@style/registration_number_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/car_name_text_view"
@@ -102,3 +116,5 @@
         tools:text="@string/registration_number_tool_text" />
 
 </RelativeLayout>
+
+

@@ -7,6 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="shimmer_background_color">#F1F1F2</color>
     <color name="bottom_sheet_line_color">#212121</color>
-    <color name="bottom_sheet_car_name_text_color">#141414</color>
 </resources>
