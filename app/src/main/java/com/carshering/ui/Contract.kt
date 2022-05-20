@@ -13,7 +13,7 @@ class Contract {
         fun moveCamera(startPosition: CameraPosition)
         fun initBottomSheet(bottomSheet: RelativeLayout)
         fun updateBottomSheetBehavior(car: Car)
-        fun setCarColor(colorRussian: String)
+        fun setCarColorField(colorRussianTitle: String, colorCode: Int)
         fun setCarTransmission(transmissionRussian: String)
     }
 
@@ -22,7 +22,7 @@ class Contract {
         fun requestCars()
         fun requestStartPosition()
         fun onMarkerClicked(marker: Marker)
-        fun translateCarColor(colorENUM: String)
-        fun translateCarTransmission(transmissionENUM: String)
+        fun fromEnumToColor(colorENUM: String)
+        fun fromEnumToTransmission(transmissionENUM: String)
     }
 }

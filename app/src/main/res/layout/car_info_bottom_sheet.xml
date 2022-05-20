@@ -57,16 +57,37 @@
         app:drawableStartCompat="@drawable/ic_seats"
         tools:text="@string/seats_tool_text" />
 
-    <TextView
-        android:id="@+id/color_text_view"
-        style="@style/text_view_style"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/car_name_text_view"
+        android:layout_marginTop="@dimen/car_color_linear_layout_margin_top"
         android:layout_toEndOf="@id/seats_text_view"
         android:background="@drawable/color_text_view_background"
-        app:drawableStartCompat="@drawable/ic_color"
-        tools:text="@string/color_tool_text" />
+        android:gravity="center"
+        android:paddingStart="@dimen/car_color_linear_layout_padding_start">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_color" />
+
+        <ImageView
+            android:id="@+id/car_color_container_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/car_color_image_view_margin_horizontal"
+            android:src="@drawable/car_color_container_background" />
+
+        <TextView
+            android:id="@+id/color_text_view"
+            style="@style/text_view_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/color_text_view_margin_top"
+            android:paddingStart="@dimen/color_text_view_padding_start"
+            tools:text="@string/color_tool_text" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/transmission_text_view"
