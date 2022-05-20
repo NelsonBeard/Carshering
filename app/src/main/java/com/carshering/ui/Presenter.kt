@@ -54,13 +54,14 @@ class Presenter : Contract.Presenter {
         )
     }
 
-    override fun translateCarColor(colorENUM: String) {
-        val colorRussian = colorsMap.getOrDefault(colorENUM, " ")
-        view?.setCarColor(colorRussian)
+    override fun fromEnumToColor(colorENUM: String) {
+        val colorRussianTitle = colorsRussianTitleMap.getOrDefault(colorENUM, " ")
+        val colorCode = colorsCodeMap.getOrDefault(colorENUM, " ")
+        view?.setCarColorField(colorRussianTitle, colorCode as Int)
     }
 
-    override fun translateCarTransmission(transmissionENUM: String) {
-        val transmissionRussian = transmissionsMap.getOrDefault(transmissionENUM, " ")
-        view?.setCarTransmission(transmissionRussian)
+    override fun fromEnumToTransmission(transmissionENUM: String) {
+        val transmissionRussianTitle = transmissionsMap.getOrDefault(transmissionENUM, " ")
+        view?.setCarTransmission(transmissionRussianTitle)
     }
 }

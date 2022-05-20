@@ -1,6 +1,8 @@
 package com.carshering.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+
 
 class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
     GoogleMap.OnMarkerClickListener {
@@ -84,6 +87,7 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         return true
     }
 
+    @SuppressLint("SetTextI18n")
     override fun updateBottomSheetBehavior(car: Car) {
         carInfo.state = BottomSheetBehavior.STATE_EXPANDED
         findViewById<TextView>(R.id.car_name_text_view).text = car.model
@@ -103,15 +107,18 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
             car.registrationNumber
         )
 
-        presenter.translateCarColor(car.color)
-        presenter.translateCarTransmission(car.transmission)
+        presenter.fromEnumToColor(car.color)
+        presenter.fromEnumToTransmission(car.transmission)
     }
 
-    override fun setCarColor(colorRussian: String) {
-        findViewById<TextView>(R.id.color_text_view).text = colorRussian
+    override fun setCarColorField(colorRussianTitle: String, colorCode: Int) {
+        val colorToDisplay = resources.getColor(colorCode)
+
+        findViewById<TextView>(R.id.color_text_view).text = colorRussianTitle
+        findViewById<ImageView>(R.id.car_color_container_image_view).setColorFilter(colorToDisplay)
     }
 
-    override fun setCarTransmission(transmissionRussian: String) {
-        findViewById<TextView>(R.id.transmission_text_view).text = transmissionRussian
+    override fun setCarTransmission(transmissionRussianTitle: String) {
+        findViewById<TextView>(R.id.transmission_text_view).text = transmissionRussianTitle
     }
 }
