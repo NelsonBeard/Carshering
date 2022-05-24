@@ -2,9 +2,8 @@ package com.carshering.ui
 
 import android.os.Handler
 import android.os.Looper
+import com.carshering.R
 import com.carshering.data.*
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import java.util.concurrent.Executors
 
 class Presenter : Contract.Presenter {
@@ -37,16 +36,13 @@ class Presenter : Contract.Presenter {
         view?.moveCamera(startPosition)
     }
 
-    override fun onMarkerClicked(marker: Marker) {
-        val markerLatLng = marker.position
+    override fun onMarkerClicked(clickedCarId: String) {
         carDAOImpl.getAllCars(
-            {
-                it.forEach { car ->
-                    val carLatLng = LatLng(car.lat, car.lng)
-                    if (markerLatLng == carLatLng) {
-                        view?.updateBottomSheetBehavior(car)
-                    }
+            { allCars ->
+                val clickedCar = allCars.firstOrNull { car ->
+                    clickedCarId == car.id
                 }
+                clickedCar?.let { view?.updateBottomSheet(it) }
             },
             {
                 //Nothing to do
@@ -55,13 +51,18 @@ class Presenter : Contract.Presenter {
     }
 
     override fun fromEnumToColor(colorENUM: String) {
-        val colorRussianTitle = colorsRussianTitleMap.getOrDefault(colorENUM, " ")
-        val colorCode = colorsCodeMap.getOrDefault(colorENUM, " ")
-        view?.setCarColorField(colorRussianTitle, colorCode as Int)
+        val colorRussianTitle = colorsRussianTitleMap.getOrDefault(colorENUM, R.string.empty_color)
+        val colorCode = colorsCodeMap.getOrDefault(colorENUM, R.color.empty_color)
+        view?.setCarColorField(colorRussianTitle, colorCode)
     }
 
     override fun fromEnumToTransmission(transmissionENUM: String) {
-        val transmissionRussianTitle = transmissionsMap.getOrDefault(transmissionENUM, " ")
+        val transmissionRussianTitle =
+            transmissionsMap.getOrDefault(transmissionENUM, R.string.empty_transmission)
         view?.setCarTransmission(transmissionRussianTitle)
+    }
+
+    override fun onDetach(view: Contract.View) {
+        this.view = null
     }
 }

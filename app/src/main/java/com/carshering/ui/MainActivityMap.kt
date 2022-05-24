@@ -1,12 +1,11 @@
 package com.carshering.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.carshering.R
 import com.carshering.databinding.ActivityMainMapBinding
 import com.carshering.domain.entity.Car
@@ -26,7 +25,7 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMainMapBinding
-    private lateinit var carInfo: BottomSheetBehavior<RelativeLayout>
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private val presenter = Presenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,13 +36,18 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
         presenter.onAttach(this)
         initMap()
-        initBottomSheet(findViewById(R.id.car_info))
+        initBottomSheet(findViewById(R.id.car_card))
     }
 
     private fun initMap() {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+    }
+
+    private fun initBottomSheet(bottomSheet: ConstraintLayout) {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -56,15 +60,13 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
     }
 
     override fun putMarkers(cars: List<Car>) {
-        cars.forEach {
-            val latLng = LatLng(it.lat, it.lng)
-            val carModel = it.model
-
-            map.addMarker(
+        cars.forEach { car ->
+            val latLng = LatLng(car.lat, car.lng)
+            val marker = map.addMarker(
                 MarkerOptions()
                     .position(latLng)
-                    .title(carModel)
             )
+            marker?.tag = car.id
         }
     }
 
@@ -76,24 +78,20 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         map.moveCamera(CameraUpdateFactory.newCameraPosition(startPosition))
     }
 
-    override fun initBottomSheet(bottomSheet: RelativeLayout) {
-        carInfo = BottomSheetBehavior.from(bottomSheet)
-        carInfo.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
     override fun onMarkerClick(marker: Marker): Boolean {
-        carInfo.state = BottomSheetBehavior.STATE_HIDDEN
-        presenter.onMarkerClicked(marker)
+        val carId = marker.tag.toString()
+
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        presenter.onMarkerClicked(carId)
         return true
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun updateBottomSheetBehavior(car: Car) {
-        carInfo.state = BottomSheetBehavior.STATE_EXPANDED
+    override fun updateBottomSheet(car: Car) {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         findViewById<TextView>(R.id.car_name_text_view).text = car.model
         findViewById<TextView>(R.id.seats_text_view).text = car.seats.toString()
         findViewById<TextView>(R.id.remain_range_text_view).text =
-            car.remainRange.toString() + " км"
+            car.remainRange.toString() + resources.getString(R.string.remain_range_measure)
 
         setCarPicture(
             findViewById(R.id.car_picture_image_view),
@@ -111,14 +109,21 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         presenter.fromEnumToTransmission(car.transmission)
     }
 
-    override fun setCarColorField(colorRussianTitle: String, colorCode: Int) {
+    override fun setCarColorField(colorRussianTitle: Int, colorCode: Int) {
         val colorToDisplay = resources.getColor(colorCode)
 
-        findViewById<TextView>(R.id.color_text_view).text = colorRussianTitle
+        findViewById<TextView>(R.id.color_text_view).text = resources.getString(colorRussianTitle)
         findViewById<ImageView>(R.id.car_color_container_image_view).setColorFilter(colorToDisplay)
     }
 
-    override fun setCarTransmission(transmissionRussianTitle: String) {
-        findViewById<TextView>(R.id.transmission_text_view).text = transmissionRussianTitle
+    override fun setCarTransmission(transmissionRussianTitle: Int) {
+        findViewById<TextView>(R.id.transmission_text_view).text =
+            resources.getString(transmissionRussianTitle)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        presenter.onDetach(this)
     }
 }

@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/car_info"
+    android:id="@+id/car_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bottom_sheet_background"
     android:elevation="@dimen/bottom_sheet_elevation"
     app:behavior_hideable="true"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <View
         android:id="@+id/bottom_sheet_line"
         android:layout_width="@dimen/bottom_sheet_line_width"
         android:layout_height="@dimen/bottom_sheet_line_height"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/bottom_sheet_line_marin_top"
+        android:layout_marginTop="@dimen/bottom_sheet_line_margin_top"
         android:alpha="0.1"
-        android:background="@color/bottom_sheet_line_color" />
+        android:background="@color/bottom_sheet_line_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/car_name_text_view"
         style="@style/car_name_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bottom_sheet_line"
-        android:layout_marginStart="@dimen/first_bottom_sheet_views_margin_start"
+        android:layout_marginHorizontal="@dimen/first_bottom_sheet_views_margin_horizontal"
         android:layout_marginTop="@dimen/car_name_text_view_margin_top"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_line"
         tools:text="@string/car_name_tool_text" />
 
     <TextView
@@ -37,12 +37,11 @@
         style="@style/text_view_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/car_name_text_view"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/first_bottom_sheet_views_margin_start"
+        android:layout_marginStart="@dimen/first_bottom_sheet_views_margin_horizontal"
         android:background="@drawable/remain_range_text_view_background"
-        android:fallbackLineSpacing="true"
         app:drawableStartCompat="@drawable/ic_remain_range"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/car_name_text_view"
         tools:text="@string/remain_range_tool_text" />
 
     <TextView
@@ -50,22 +49,25 @@
         style="@style/text_view_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/car_name_text_view"
-        android:layout_marginHorizontal="@dimen/seats_text_view_margin_horizontal"
+        android:layout_marginStart="@dimen/seats_text_view_margin_start"
         android:layout_toEndOf="@id/remain_range_text_view"
         android:background="@drawable/seats_text_view_background"
         app:drawableStartCompat="@drawable/ic_seats"
+        app:layout_constraintStart_toEndOf="@id/remain_range_text_view"
+        app:layout_constraintTop_toBottomOf="@id/car_name_text_view"
         tools:text="@string/seats_tool_text" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/car_name_text_view"
+        android:layout_marginStart="@dimen/color_linear_layout_text_view_margin_start"
         android:layout_marginTop="@dimen/car_color_linear_layout_margin_top"
         android:layout_toEndOf="@id/seats_text_view"
         android:background="@drawable/color_text_view_background"
         android:gravity="center"
-        android:paddingStart="@dimen/car_color_linear_layout_padding_start">
+        android:paddingStart="@dimen/car_color_linear_layout_padding_start"
+        app:layout_constraintStart_toEndOf="@id/seats_text_view"
+        app:layout_constraintTop_toBottomOf="@id/car_name_text_view">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -94,31 +96,31 @@
         style="@style/text_view_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/remain_range_text_view"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/first_bottom_sheet_views_margin_start"
+        android:layout_marginStart="@dimen/first_bottom_sheet_views_margin_horizontal"
         android:background="@drawable/transmission_text_view_background"
         app:drawableStartCompat="@drawable/ic_transmission"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/remain_range_text_view"
         tools:text="@string/transmission_tool_text" />
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/transmission_text_view">
+        android:layout_margin="@dimen/car_picture_shimmer_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/transmission_text_view">
 
         <ImageView
             android:id="@+id/shimmer_image_view"
             android:layout_width="match_parent"
-            android:layout_height="182dp"
-            android:layout_margin="@dimen/car_picture_image_view_margin"
+            android:layout_height="@dimen/car_picture_image_view_height"
             android:background="@color/shimmer_background_color" />
 
         <ImageView
             android:id="@+id/car_picture_image_view"
             android:layout_width="match_parent"
-            android:layout_height="182dp"
-            android:layout_margin="@dimen/car_picture_image_view_margin"
+            android:layout_height="@dimen/car_picture_image_view_height"
             android:contentDescription="@string/car_picture_description"
             android:visibility="gone" />
     </com.facebook.shimmer.ShimmerFrameLayout>
@@ -128,14 +130,14 @@
         style="@style/registration_number_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/car_name_text_view"
-        android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/registration_number_text_view_margin_top"
         android:layout_marginEnd="@dimen/registration_number_text_view_margin_end"
         android:background="@drawable/registration_number_text_view_background"
         android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@id/shimmer_frame_layout"
+        app:layout_constraintTop_toTopOf="@id/shimmer_frame_layout"
         tools:text="@string/registration_number_tool_text" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 

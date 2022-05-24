@@ -9,4 +9,13 @@
     <string name="color_tool_text">Красный</string>
     <string name="transmission_tool_text">Автоматическая</string>
     <string name="registration_number_tool_text">A000AA777</string>
+    <string name="remain_range_measure">\ км\</string>
+    <string name="color_white_ru">Белый</string>
+    <string name="color_black_ru">Черный</string>
+    <string name="color_red_ru">Красный</string>
+    <string name="color_grey_ru">Серый</string>
+    <string name="empty_color">\ \</string>
+    <string name="transmission_automatic_ru">Автоматическая</string>
+    <string name="transmission_manual_ru">Ручная</string>
+    <string name="empty_transmission">\ \</string>
 </resources>

@@ -1,9 +1,7 @@
 package com.carshering.ui
 
-import android.widget.RelativeLayout
 import com.carshering.domain.entity.Car
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.Marker
 
 class Contract {
 
@@ -11,18 +9,18 @@ class Contract {
         fun putMarkers(cars: List<Car>)
         fun showErrorToast()
         fun moveCamera(startPosition: CameraPosition)
-        fun initBottomSheet(bottomSheet: RelativeLayout)
-        fun updateBottomSheetBehavior(car: Car)
-        fun setCarColorField(colorRussianTitle: String, colorCode: Int)
-        fun setCarTransmission(transmissionRussianTitle: String)
+        fun updateBottomSheet(car: Car)
+        fun setCarColorField(colorRussianTitle: Int, colorCode: Int)
+        fun setCarTransmission(transmissionRussianTitle: Int)
     }
 
     interface Presenter {
         fun onAttach(view: View)
         fun requestCars()
         fun requestStartPosition()
-        fun onMarkerClicked(marker: Marker)
+        fun onMarkerClicked(clickedCarId: String)
         fun fromEnumToColor(colorENUM: String)
         fun fromEnumToTransmission(transmissionENUM: String)
+        fun onDetach(view: View)
     }
 }
