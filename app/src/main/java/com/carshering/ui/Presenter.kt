@@ -37,17 +37,11 @@ class Presenter : Contract.Presenter {
     }
 
     override fun onMarkerClicked(clickedCarId: String) {
-        carDAOImpl.getAllCars(
-            { allCars ->
-                val clickedCar = allCars.firstOrNull { car ->
-                    clickedCarId == car.id
-                }
-                clickedCar?.let { view?.updateBottomSheet(it) }
-            },
-            {
-                //Nothing to do
-            }
-        )
+
+        val clickedCar = carDAOImpl.cars.firstOrNull {
+            clickedCarId == it.id
+        }
+        clickedCar?.let { view?.updateBottomSheet(it) }
     }
 
     override fun fromEnumToColor(colorENUM: String) {

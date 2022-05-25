@@ -81,13 +81,12 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
     override fun onMarkerClick(marker: Marker): Boolean {
         val carId = marker.tag.toString()
 
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         presenter.onMarkerClicked(carId)
         return true
     }
 
     override fun updateBottomSheet(car: Car) {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         findViewById<TextView>(R.id.car_name_text_view).text = car.model
         findViewById<TextView>(R.id.seats_text_view).text = car.seats.toString()
         findViewById<TextView>(R.id.remain_range_text_view).text =
@@ -107,6 +106,7 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
         presenter.fromEnumToColor(car.color)
         presenter.fromEnumToTransmission(car.transmission)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun setCarColorField(colorRussianTitle: Int, colorCode: Int) {

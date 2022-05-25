@@ -3,7 +3,6 @@ package com.carshering.data
 import android.os.Handler
 import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.CarDAO
-import java.net.URL
 import java.util.concurrent.Executor
 
 const val CAR_URL =
@@ -14,7 +13,7 @@ class CarDAOImpl(
     private val handler: Handler,
     private val httpClient: HttpClient
 ) : CarDAO {
-    private lateinit var cars: List<Car>
+    lateinit var cars: List<Car>
 
     override fun getAllCars(
         onSuccess: (List<Car>) -> Unit,
@@ -26,6 +25,7 @@ class CarDAOImpl(
 
                 cars = JsonToCarListAdapter(serverResponseData).fromJson()
                 handOverToUIThreadSuccess(onSuccess)
+
             } catch (error: Exception) {
                 error.printStackTrace()
                 handOverToUIThreadError(onError)

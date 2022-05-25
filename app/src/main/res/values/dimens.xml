@@ -18,4 +18,5 @@
     <dimen name="color_linear_layout_text_view_margin_start">10dp</dimen>
     <dimen name="bottom_sheet_line_margin_top">11.5dp</dimen>
     <dimen name="car_picture_image_view_height">182dp</dimen>
+    <dimen name="bottom_sheet_peek_height">0dp</dimen>
 </resources>

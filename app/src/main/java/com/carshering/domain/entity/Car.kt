@@ -1,6 +1,5 @@
 package com.carshering.domain.entity
 
-
 data class Car(
     val id: String,
     val registrationNumber: String,
