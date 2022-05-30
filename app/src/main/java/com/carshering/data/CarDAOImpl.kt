@@ -9,11 +9,12 @@ const val CAR_URL =
     "https://raw.githubusercontent.com/NelsonBeard/CarsheringAPI/master/cars.json"
 
 class CarDAOImpl(
+    private val localRepo: LocalRepository,
     private val executor: Executor,
     private val handler: Handler,
     private val httpClient: HttpClient
 ) : CarDAO {
-    lateinit var cars: List<Car>
+    private lateinit var cars: List<Car>
 
     override fun getAllCars(
         onSuccess: (List<Car>) -> Unit,
@@ -22,15 +23,20 @@ class CarDAOImpl(
         executor.execute {
             try {
                 val serverResponseData = httpClient.get(CAR_URL)
-
                 cars = JsonToCarListAdapter(serverResponseData).fromJson()
-                handOverToUIThreadSuccess(onSuccess)
 
+                saveCarsToLocalRepo(cars)
+                handOverToUIThreadSuccess(onSuccess)
             } catch (error: Exception) {
                 error.printStackTrace()
                 handOverToUIThreadError(onError)
             }
         }
+
+    }
+
+    override fun saveCarsToLocalRepo(cars: List<Car>) {
+        localRepo.saveCars(cars)
     }
 
     private fun handOverToUIThreadSuccess(onSuccess: (List<Car>) -> Unit) {

@@ -11,6 +11,7 @@ class Presenter : Contract.Presenter {
     private var view: Contract.View? = null
     private val carDAOImpl =
         CarDAOImpl(
+            LocalRepository,
             Executors.newSingleThreadExecutor(),
             Handler(Looper.getMainLooper()),
             HttpClient()
@@ -37,8 +38,8 @@ class Presenter : Contract.Presenter {
     }
 
     override fun onMarkerClicked(clickedCarId: String) {
-
-        val clickedCar = carDAOImpl.cars.firstOrNull {
+        val savedCars = LocalRepository.getCars()
+        val clickedCar = savedCars?.firstOrNull {
             clickedCarId == it.id
         }
         clickedCar?.let { view?.updateBottomSheet(it) }
