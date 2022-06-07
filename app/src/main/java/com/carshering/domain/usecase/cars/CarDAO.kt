@@ -1,4 +1,4 @@
-package com.carshering.domain.usecase
+package com.carshering.domain.usecase.cars
 
 import com.carshering.domain.entity.Car
 

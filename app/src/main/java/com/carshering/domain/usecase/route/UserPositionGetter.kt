@@ -1,4 +1,4 @@
-package com.carshering.domain.usecase
+package com.carshering.domain.usecase.route
 
 import com.google.android.gms.maps.model.LatLng
 

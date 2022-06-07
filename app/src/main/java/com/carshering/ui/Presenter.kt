@@ -6,8 +6,12 @@ import com.carshering.R
 import com.carshering.data.HttpClient
 import com.carshering.data.StartPositionManual
 import com.carshering.data.cars.*
+import com.carshering.data.route.GoogleMapToMapboxLatLngAdapter
 import com.carshering.data.route.OriginLatLng
+import com.carshering.data.route.RouteDaoImpl
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.android.PolyUtil
 import java.util.concurrent.Executors
 
 class Presenter : Contract.Presenter {
@@ -19,6 +23,13 @@ class Presenter : Contract.Presenter {
             Executors.newSingleThreadExecutor(),
             Handler(Looper.getMainLooper()),
             HttpClient()
+        )
+    private val routeDaoImpl =
+        RouteDaoImpl(
+            HttpClient(),
+            Executors.newSingleThreadExecutor(),
+            Handler(Looper.getMainLooper()),
+            GoogleMapToMapboxLatLngAdapter()
         )
 
     override fun onAttach(view: Contract.View) {
@@ -46,12 +57,39 @@ class Presenter : Contract.Presenter {
         val clickedCar = savedCars?.firstOrNull {
             clickedCarId == it.id
         }
-
-        val originLatLng = OriginLatLng.getOriginLatLng()
         val destinationLatLng = LatLng(clickedCar!!.lat, clickedCar.lng)
 
-        view?.showRoute(destinationLatLng)
+        requestRoute(destinationLatLng)
         clickedCar?.let { view?.updateBottomSheet(it) }
+    }
+
+    override fun requestRoute(destinationLatLngGoogleMap: LatLng?) {
+        val originLatLngGoogleMap = OriginLatLng.getOriginLatLng()
+
+        routeDaoImpl.getRoute(
+            originLatLngGoogleMap,
+            destinationLatLngGoogleMap,
+
+            {
+                view?.showRoute(it)
+            },
+
+            {
+
+            }
+        )
+
+
+        val line = PolylineOptions()
+        val routeP =
+            PolyUtil.decode("ykamIwgptIBSb|@j\\CZlHjIjSaf@FTdXgXhPqGtG|AfCLlG}NrRef@HLnHiNGUxa@ck@lI__Ax@kM")
+
+        line.color(R.color.route_color)
+        routeP.forEach {
+            line.add(it)
+        }
+
+
     }
 
     override fun fromEnumToColor(colorENUM: String) {
@@ -69,4 +107,5 @@ class Presenter : Contract.Presenter {
     override fun onDetach(view: Contract.View) {
         this.view = null
     }
+
 }

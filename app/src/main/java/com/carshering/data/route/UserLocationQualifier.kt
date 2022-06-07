@@ -2,7 +2,7 @@ package com.carshering.data.route
 
 import android.annotation.SuppressLint
 import android.os.Handler
-import com.carshering.domain.usecase.UserPositionGetter
+import com.carshering.domain.usecase.route.UserPositionGetter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 

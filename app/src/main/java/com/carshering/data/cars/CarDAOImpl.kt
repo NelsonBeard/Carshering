@@ -3,7 +3,7 @@ package com.carshering.data.cars
 import android.os.Handler
 import com.carshering.data.HttpClient
 import com.carshering.domain.entity.Car
-import com.carshering.domain.usecase.CarDAO
+import com.carshering.domain.usecase.cars.CarDAO
 import java.util.concurrent.Executor
 
 const val CAR_URL =
