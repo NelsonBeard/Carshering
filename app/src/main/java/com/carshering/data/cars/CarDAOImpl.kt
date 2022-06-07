@@ -1,6 +1,7 @@
-package com.carshering.data
+package com.carshering.data.cars
 
 import android.os.Handler
+import com.carshering.data.HttpClient
 import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.CarDAO
 import java.util.concurrent.Executor
@@ -9,7 +10,7 @@ const val CAR_URL =
     "https://raw.githubusercontent.com/NelsonBeard/CarsheringAPI/master/cars.json"
 
 class CarDAOImpl(
-    private val localRepo: LocalRepository,
+    private val localRepo: CarsLocalRepository,
     private val executor: Executor,
     private val handler: Handler,
     private val httpClient: HttpClient
@@ -32,11 +33,10 @@ class CarDAOImpl(
                 handOverToUIThreadError(onError)
             }
         }
-
     }
 
     override fun saveCarsToLocalRepo(cars: List<Car>) {
-        localRepo.saveCars(cars)
+        CarsLocalRepository.saveCars(cars)
     }
 
     private fun handOverToUIThreadSuccess(onSuccess: (List<Car>) -> Unit) {

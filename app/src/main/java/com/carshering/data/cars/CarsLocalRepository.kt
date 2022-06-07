@@ -1,8 +1,8 @@
-package com.carshering.data
+package com.carshering.data.cars
 
 import com.carshering.domain.entity.Car
 
-object LocalRepository {
+object CarsLocalRepository {
 
     private var savedCars: List<Car>? = null
 

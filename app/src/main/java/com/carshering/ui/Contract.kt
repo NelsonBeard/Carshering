@@ -10,6 +10,7 @@ class Contract {
         fun showErrorToast()
         fun moveCamera(startPosition: CameraPosition)
         fun updateBottomSheet(car: Car)
+        fun showRoute()
         fun setCarColorField(colorRussianTitle: Int, colorCode: Int)
         fun setCarTransmission(transmissionRussianTitle: Int)
     }

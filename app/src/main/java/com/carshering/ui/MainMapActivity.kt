@@ -1,5 +1,9 @@
 package com.carshering.ui
 
+
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,13 +23,15 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
+const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
-class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
-    GoogleMap.OnMarkerClickListener {
+class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
+    GoogleMap.OnMarkerClickListener{
 
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMainMapBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+
     private val presenter = Presenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +61,30 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
         presenter.requestStartPosition()
         presenter.requestCars()
+        requestPermission()
 
         map.setOnMarkerClickListener(this)
+    }
+
+    private fun requestPermission() {
+        requestPermissions(
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                map.isMyLocationEnabled = true
+            }
+        }
     }
 
     override fun putMarkers(cars: List<Car>) {
@@ -109,6 +137,10 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
+    override fun showRoute() {
+        TODO("Not yet implemented")
+    }
+
     override fun setCarColorField(colorRussianTitle: Int, colorCode: Int) {
         val colorToDisplay = resources.getColor(colorCode)
 
@@ -123,7 +155,6 @@ class MainActivityMap : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
     override fun onDestroy() {
         super.onDestroy()
-
         presenter.onDetach(this)
     }
 }

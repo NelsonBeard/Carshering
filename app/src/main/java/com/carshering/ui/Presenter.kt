@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import com.carshering.R
 import com.carshering.data.*
+import com.carshering.data.cars.*
 import java.util.concurrent.Executors
 
 class Presenter : Contract.Presenter {
@@ -11,7 +12,7 @@ class Presenter : Contract.Presenter {
     private var view: Contract.View? = null
     private val carDAOImpl =
         CarDAOImpl(
-            LocalRepository,
+            CarsLocalRepository,
             Executors.newSingleThreadExecutor(),
             Handler(Looper.getMainLooper()),
             HttpClient()
@@ -38,11 +39,13 @@ class Presenter : Contract.Presenter {
     }
 
     override fun onMarkerClicked(clickedCarId: String) {
-        val savedCars = LocalRepository.getCars()
+        val savedCars = CarsLocalRepository.getCars()
         val clickedCar = savedCars?.firstOrNull {
             clickedCarId == it.id
         }
         clickedCar?.let { view?.updateBottomSheet(it) }
+
+
     }
 
     override fun fromEnumToColor(colorENUM: String) {
