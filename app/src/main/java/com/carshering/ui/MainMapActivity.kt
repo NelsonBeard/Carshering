@@ -5,14 +5,20 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.carshering.R
+import com.carshering.data.route.OriginLatLng
+import com.carshering.data.route.UserLocationQualifier
 import com.carshering.databinding.ActivityMainMapBinding
 import com.carshering.domain.entity.Car
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -26,11 +32,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
 class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
-    GoogleMap.OnMarkerClickListener{
+    GoogleMap.OnMarkerClickListener {
 
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMainMapBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var qualifier: UserLocationQualifier
 
     private val presenter = Presenter()
 
@@ -43,6 +50,11 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         presenter.onAttach(this)
         initMap()
         initBottomSheet(findViewById(R.id.car_card))
+
+        qualifier = UserLocationQualifier(
+            LocationServices.getFusedLocationProviderClient(this),
+            Handler(Looper.getMainLooper())
+        )
     }
 
     private fun initMap() {
@@ -66,14 +78,29 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         map.setOnMarkerClickListener(this)
     }
 
+    @SuppressLint("MissingPermission")
     private fun requestPermission() {
-        requestPermissions(
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            LOCATION_PERMISSION_REQUEST_CODE
-        )
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            map.isMyLocationEnabled = true
+
+            qualifier.qualifyUserLocation {
+                OriginLatLng.saveOriginLatLng(it)
+            }
+
+            return
+        } else {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
     }
 
-    @SuppressLint("MissingPermission")
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -82,7 +109,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                map.isMyLocationEnabled = true
+                requestPermission()
             }
         }
     }
@@ -137,15 +164,18 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    override fun showRoute() {
-        TODO("Not yet implemented")
+    override fun showRoute(latLng: LatLng?) {
+        Toast.makeText(this, latLng.toString(), Toast.LENGTH_LONG).show()
     }
 
     override fun setCarColorField(colorRussianTitle: Int, colorCode: Int) {
         val colorToDisplay = resources.getColor(colorCode)
 
-        findViewById<TextView>(R.id.color_text_view).text = resources.getString(colorRussianTitle)
-        findViewById<ImageView>(R.id.car_color_container_image_view).setColorFilter(colorToDisplay)
+        findViewById<TextView>(R.id.color_text_view).text =
+            resources.getString(colorRussianTitle)
+        findViewById<ImageView>(R.id.car_color_container_image_view).setColorFilter(
+            colorToDisplay
+        )
     }
 
     override fun setCarTransmission(transmissionRussianTitle: Int) {

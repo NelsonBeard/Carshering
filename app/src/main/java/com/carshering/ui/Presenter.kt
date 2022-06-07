@@ -3,8 +3,11 @@ package com.carshering.ui
 import android.os.Handler
 import android.os.Looper
 import com.carshering.R
-import com.carshering.data.*
+import com.carshering.data.HttpClient
+import com.carshering.data.StartPositionManual
 import com.carshering.data.cars.*
+import com.carshering.data.route.OriginLatLng
+import com.google.android.gms.maps.model.LatLng
 import java.util.concurrent.Executors
 
 class Presenter : Contract.Presenter {
@@ -43,9 +46,12 @@ class Presenter : Contract.Presenter {
         val clickedCar = savedCars?.firstOrNull {
             clickedCarId == it.id
         }
+
+        val originLatLng = OriginLatLng.getOriginLatLng()
+        val destinationLatLng = LatLng(clickedCar!!.lat, clickedCar.lng)
+
+        view?.showRoute(destinationLatLng)
         clickedCar?.let { view?.updateBottomSheet(it) }
-
-
     }
 
     override fun fromEnumToColor(colorENUM: String) {

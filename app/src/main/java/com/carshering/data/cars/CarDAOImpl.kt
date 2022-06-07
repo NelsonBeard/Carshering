@@ -36,7 +36,7 @@ class CarDAOImpl(
     }
 
     override fun saveCarsToLocalRepo(cars: List<Car>) {
-        CarsLocalRepository.saveCars(cars)
+        localRepo.saveCars(cars)
     }
 
     private fun handOverToUIThreadSuccess(onSuccess: (List<Car>) -> Unit) {
