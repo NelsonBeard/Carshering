@@ -19,4 +19,6 @@
     <dimen name="bottom_sheet_line_margin_top">11.5dp</dimen>
     <dimen name="car_picture_image_view_height">182dp</dimen>
     <dimen name="bottom_sheet_peek_height">0dp</dimen>
+    <dimen name="map_bottom_padding">290dp</dimen>
+    <dimen name="bounds_padding">90dp</dimen>
 </resources>

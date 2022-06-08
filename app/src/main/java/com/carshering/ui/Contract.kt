@@ -3,6 +3,7 @@ package com.carshering.ui
 import com.carshering.domain.entity.Car
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 
 class Contract {
@@ -12,7 +13,7 @@ class Contract {
         fun showErrorToast()
         fun moveCamera(startPosition: CameraPosition)
         fun updateBottomSheet(car: Car)
-        fun showRoute(line: PolylineOptions)
+        fun showRoute(route: PolylineOptions, bounds: LatLngBounds)
         fun setCarColorField(colorRussianTitle: Int, colorCode: Int)
         fun setCarTransmission(transmissionRussianTitle: Int)
     }

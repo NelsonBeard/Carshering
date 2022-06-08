@@ -36,7 +36,11 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var qualifier: UserLocationQualifier
 
+    private var polyline: Polyline? = null
     private val presenter = Presenter()
+
+    private val mapPadding by lazy { resources.getDimension(R.dimen.map_bottom_padding).toInt() }
+    private val boundsPadding by lazy { resources.getDimension(R.dimen.bounds_padding).toInt() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +91,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
             qualifier.qualifyUserLocation {
                 OriginLatLng.saveOriginLatLng(it)
             }
-
             return
         } else {
             requestPermissions(
@@ -96,7 +99,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
             )
         }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -135,7 +137,15 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         presenter.onMarkerClicked(carId)
+        removePreviousPolyline()
+
         return true
+    }
+
+    private fun removePreviousPolyline() {
+        if (polyline != null) {
+            polyline?.remove()
+        }
     }
 
     override fun updateBottomSheet(car: Car) {
@@ -161,8 +171,11 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    override fun showRoute(line: PolylineOptions) {
-        map.addPolyline(line)
+    override fun showRoute(route: PolylineOptions, bounds: LatLngBounds) {
+        polyline = map.addPolyline(route)
+        
+        map.setPadding(0, 0, 0, mapPadding)
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, boundsPadding))
     }
 
     override fun setCarColorField(colorRussianTitle: Int, colorCode: Int) {

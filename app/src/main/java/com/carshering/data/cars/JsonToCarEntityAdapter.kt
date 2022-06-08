@@ -1,7 +1,7 @@
 package com.carshering.data.cars
 
 import com.carshering.domain.entity.Car
-import com.carshering.domain.usecase.cars.JsonAdapter
+import com.carshering.domain.usecase.JsonAdapter
 import com.carshering.exception.JsonParseException
 import org.json.JSONObject
 

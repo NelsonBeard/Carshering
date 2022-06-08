@@ -10,8 +10,6 @@ import com.carshering.data.route.GoogleMapToMapboxLatLngAdapter
 import com.carshering.data.route.OriginLatLng
 import com.carshering.data.route.RouteDaoImpl
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
-import com.google.maps.android.PolyUtil
 import java.util.concurrent.Executors
 
 class Presenter : Contract.Presenter {
@@ -57,10 +55,14 @@ class Presenter : Contract.Presenter {
         val clickedCar = savedCars?.firstOrNull {
             clickedCarId == it.id
         }
-        val destinationLatLng = LatLng(clickedCar!!.lat, clickedCar.lng)
 
-        requestRoute(destinationLatLng)
-        clickedCar?.let { view?.updateBottomSheet(it) }
+        if (clickedCar != null) {
+            val destinationLatLng = LatLng(clickedCar.lat, clickedCar.lng)
+
+            requestRoute(destinationLatLng)
+            clickedCar.let { view?.updateBottomSheet(it) }
+        }
+
     }
 
     override fun requestRoute(destinationLatLngGoogleMap: LatLng?) {
@@ -71,25 +73,12 @@ class Presenter : Contract.Presenter {
             destinationLatLngGoogleMap,
 
             {
-                view?.showRoute(it)
+                view?.showRoute(it.first, it.second)
             },
-
             {
-
+                //Nothing to do
             }
         )
-
-
-        val line = PolylineOptions()
-        val routeP =
-            PolyUtil.decode("ykamIwgptIBSb|@j\\CZlHjIjSaf@FTdXgXhPqGtG|AfCLlG}NrRef@HLnHiNGUxa@ck@lI__Ax@kM")
-
-        line.color(R.color.route_color)
-        routeP.forEach {
-            line.add(it)
-        }
-
-
     }
 
     override fun fromEnumToColor(colorENUM: String) {
