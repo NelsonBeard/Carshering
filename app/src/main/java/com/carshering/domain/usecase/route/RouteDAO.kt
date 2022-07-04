@@ -6,8 +6,8 @@ import com.google.android.gms.maps.model.PolylineOptions
 
 interface RouteDAO {
     fun getRoute(
-        originLatLng: LatLng?,
-        destinationLatLng: LatLng?,
+        originLatLng: LatLng?, // параметр должен быть обязательным
+        destinationLatLng: LatLng?, // параметр должен быть обязательным
         onSuccess: (Pair<PolylineOptions, LatLngBounds>) -> Unit,
         onError: (Exception) -> Unit
     )

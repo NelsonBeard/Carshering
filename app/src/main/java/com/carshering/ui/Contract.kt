@@ -12,6 +12,9 @@ class Contract {
         fun putMarkers(cars: List<Car>)
         fun showErrorToast()
         fun moveCamera(startPosition: CameraPosition)
+        // Удалить setCarColorField, setCarTransmission
+        // Сделать метод updateBottomSheet(CarViewModel) для отрисовки панели через один метод,
+        // Оставить всю логику определения цветов и локализации в презентере
         fun updateBottomSheet(car: Car)
         fun showRoute(route: PolylineOptions, bounds: LatLngBounds)
         fun setCarColorField(colorRussianTitle: Int, colorCode: Int)
@@ -24,6 +27,7 @@ class Contract {
         fun requestStartPosition()
         fun requestRoute(destinationLatLng: LatLng?)
         fun onMarkerClicked(clickedCarId: String)
+        // ENUM написан заглавными, хотя это не аббривиатура
         fun fromEnumToColor(colorENUM: String)
         fun fromEnumToTransmission(transmissionENUM: String)
         fun onDetach(view: View)

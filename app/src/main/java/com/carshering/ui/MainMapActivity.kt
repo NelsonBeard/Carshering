@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.carshering.R
 import com.carshering.data.route.OriginLatLng
 import com.carshering.data.route.UserLocationQualifier
@@ -81,6 +82,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
     @SuppressLint("MissingPermission")
     private fun requestPermission() {
+        // может быть дан пермишен, но геолокация может быть отключена на телефоне
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -91,6 +93,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
             qualifier.qualifyUserLocation {
                 OriginLatLng.saveOriginLatLng(it)
             }
+            // убрать return
             return
         } else {
             requestPermissions(
@@ -109,6 +112,8 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 requestPermission()
+            } else {
+                // Показать ошибку если пермишены не были даны
             }
         }
     }
@@ -143,14 +148,16 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
     }
 
     private fun removePreviousPolyline() {
-        if (polyline != null) {
+        if (polyline != null) { // лишний if
             polyline?.remove()
         }
     }
 
     override fun updateBottomSheet(car: Car) {
+        // разобраться что случилось с байндингом, если успеешь
         findViewById<TextView>(R.id.car_name_text_view).text = car.model
         findViewById<TextView>(R.id.seats_text_view).text = car.seats.toString()
+        // убрать слэши "/" и использовать List<String>.joinToString()
         findViewById<TextView>(R.id.remain_range_text_view).text =
             car.remainRange.toString() + resources.getString(R.string.remain_range_measure)
 
@@ -179,6 +186,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
     }
 
     override fun setCarColorField(colorRussianTitle: Int, colorCode: Int) {
+        // Использовать ResourcesCompat.getColor()
         val colorToDisplay = resources.getColor(colorCode)
 
         findViewById<TextView>(R.id.color_text_view).text =

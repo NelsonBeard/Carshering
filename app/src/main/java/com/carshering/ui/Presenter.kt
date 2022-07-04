@@ -15,6 +15,7 @@ import java.util.concurrent.Executors
 class Presenter : Contract.Presenter {
 
     private var view: Contract.View? = null
+    // Убрать Impl, carDAO: CarDAO = CarDAOImpl...
     private val carDAOImpl =
         CarDAOImpl(
             CarsLocalRepository,
@@ -51,6 +52,7 @@ class Presenter : Contract.Presenter {
     }
 
     override fun onMarkerClicked(clickedCarId: String) {
+        // получение одной конкретной машины через DAO
         val savedCars = CarsLocalRepository.getCars()
         val clickedCar = savedCars?.firstOrNull {
             clickedCarId == it.id
@@ -66,6 +68,7 @@ class Presenter : Contract.Presenter {
     }
 
     override fun requestRoute(destinationLatLngGoogleMap: LatLng?) {
+        // Учесть то, что original LatLng может быть null
         val originLatLngGoogleMap = OriginLatLng.getOriginLatLng()
 
         routeDaoImpl.getRoute(
@@ -76,7 +79,7 @@ class Presenter : Contract.Presenter {
                 view?.showRoute(it.first, it.second)
             },
             {
-                //Nothing to do
+                // Вызвать показ ошибки: "Не удалось отобразить маршрут до авто"
             }
         )
     }

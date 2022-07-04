@@ -3,8 +3,11 @@ package com.carshering.data
 import com.carshering.exception.DownloadException
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
+import kotlin.jvm.Throws
 
 class HttpClient {
+
+    @Throws(DownloadException::class)
     fun get(url: String): String {
         val connection = URL(url).openConnection() as HttpsURLConnection
 
