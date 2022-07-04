@@ -1,4 +1,4 @@
-package com.carshering.data
+package com.carshering.data.cars
 
 import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.JsonAdapter

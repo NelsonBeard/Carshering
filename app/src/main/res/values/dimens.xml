@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bottom_sheet_elevation">8dp</dimen>
+    <dimen name="bottom_sheet_line_width">27dp</dimen>
+    <dimen name="bottom_sheet_line_height">3dp</dimen>
+    <dimen name="bottom_sheet_line_marin_top">11.5dp</dimen>
+    <dimen name="first_bottom_sheet_views_margin_horizontal">16dp</dimen>
+    <dimen name="car_name_text_view_margin_top">18.5dp</dimen>
+    <dimen name="seats_text_view_margin_start">10dp</dimen>
+    <dimen name="car_picture_shimmer_layout">16dp</dimen>
+    <dimen name="registration_number_text_view_margin_top">140dp</dimen>
+    <dimen name="registration_number_text_view_margin_end">18dp</dimen>
+    <dimen name="color_text_view_margin_top">0dp</dimen>
+    <dimen name="color_text_view_padding_start">0dp</dimen>
+    <dimen name="car_color_image_view_margin_horizontal">4.5dp</dimen>
+    <dimen name="car_color_linear_layout_margin_top">10dp</dimen>
+    <dimen name="car_color_linear_layout_padding_start">10dp</dimen>
+    <dimen name="color_linear_layout_text_view_margin_start">10dp</dimen>
+    <dimen name="bottom_sheet_line_margin_top">11.5dp</dimen>
+    <dimen name="car_picture_image_view_height">182dp</dimen>
+    <dimen name="bottom_sheet_peek_height">0dp</dimen>
+    <dimen name="map_bottom_padding">290dp</dimen>
+    <dimen name="bounds_padding">90dp</dimen>
+</resources>
