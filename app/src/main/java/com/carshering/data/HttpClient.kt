@@ -6,8 +6,8 @@ import javax.net.ssl.HttpsURLConnection
 import kotlin.jvm.Throws
 
 class HttpClient {
-
-    @Throws(DownloadException::class)
+    
+    // @Throws(DownloadException::class)
     fun get(url: String): String {
         val connection = URL(url).openConnection() as HttpsURLConnection
 

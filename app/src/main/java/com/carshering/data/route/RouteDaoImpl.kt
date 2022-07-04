@@ -19,8 +19,8 @@ class RouteDaoImpl(
 ) : RouteDAO {
 
     override fun getRoute(
-        originLatLngGoogle: LatLng?,
-        destinationLatLngGoogle: LatLng?,
+        originLatLngGoogle: LatLng?, // обязательный аргумент
+        destinationLatLngGoogle: LatLng?, // обязательный аргумент
         onSuccess: (Pair<PolylineOptions, LatLngBounds>) -> Unit,
         onError: (Exception) -> Unit
     ) {
@@ -32,6 +32,7 @@ class RouteDaoImpl(
         executor.execute {
             try {
                 val serverResponseData = httpClient.get(routeUrl)
+                // тут адаптер создается локально в методе, а latLngAdapter создается полем
                 val route = JsonToPolylineOptionsAdapter(serverResponseData).fromJson()
 
                 handler.post { onSuccess(route) }

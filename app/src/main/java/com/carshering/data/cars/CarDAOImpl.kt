@@ -15,6 +15,7 @@ class CarDAOImpl(
     private val handler: Handler,
     private val httpClient: HttpClient
 ) : CarDAO {
+    // есть два места хранения списка авто, нужно использовать одно
     private lateinit var cars: List<Car>
 
     override fun getAllCars(
@@ -35,6 +36,7 @@ class CarDAOImpl(
         }
     }
 
+    // метод не нужен
     override fun saveCarsToLocalRepo(cars: List<Car>) {
         localRepo.saveCars(cars)
     }

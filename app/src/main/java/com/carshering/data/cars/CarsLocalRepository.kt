@@ -10,6 +10,7 @@ object CarsLocalRepository {
         savedCars = cars
     }
 
+    // я бы не использовал nullable переменную
     fun getCars(): List<Car>? {
         return savedCars
     }
