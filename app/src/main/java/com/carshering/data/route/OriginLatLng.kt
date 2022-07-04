@@ -10,7 +10,11 @@ object OriginLatLng {
         originLatLng = latLng
     }
 
-    fun getOriginLatLng(): LatLng? {
-        return originLatLng
+    fun isExist(): Boolean {
+        return originLatLng != null
+    }
+
+    fun getOriginLatLng(): LatLng {
+        return originLatLng!!
     }
 }

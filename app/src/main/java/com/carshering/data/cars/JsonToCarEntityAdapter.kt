@@ -9,6 +9,7 @@ open class JsonToCarEntityAdapter(
     private val json: JSONObject
 ) : JsonAdapter<Car> {
 
+    @Throws(JsonParseException::class)
     override fun fromJson(): Car {
         try {
             return Car(
@@ -24,7 +25,7 @@ open class JsonToCarEntityAdapter(
                 lng = json.getJSONObject("location").getDouble("lng")
             )
         } catch (error: Exception) {
-            throw JsonParseException("Can't parse json")
+            throw JsonParseException("Can't parse json", error)
         }
     }
 }

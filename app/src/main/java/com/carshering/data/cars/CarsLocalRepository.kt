@@ -4,14 +4,13 @@ import com.carshering.domain.entity.Car
 
 object CarsLocalRepository {
 
-    private var savedCars: List<Car>? = null
+    private var savedCars: List<Car> = emptyList()
 
     fun saveCars(cars: List<Car>) {
         savedCars = cars
     }
 
-    // я бы не использовал nullable переменную
-    fun getCars(): List<Car>? {
+    fun getCars(): List<Car> {
         return savedCars
     }
 }

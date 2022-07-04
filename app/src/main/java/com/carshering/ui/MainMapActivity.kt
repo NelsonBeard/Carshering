@@ -1,14 +1,11 @@
 package com.carshering.ui
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -18,6 +15,7 @@ import com.carshering.R
 import com.carshering.data.route.OriginLatLng
 import com.carshering.data.route.UserLocationQualifier
 import com.carshering.databinding.ActivityMainMapBinding
+import com.carshering.domain.entity.CarCardViewModel
 import com.carshering.domain.entity.Car
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -51,7 +49,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
         presenter.onAttach(this)
         initMap()
-        initBottomSheet(findViewById(R.id.car_card))
+        initBottomSheet(binding.carCard)
 
         qualifier = UserLocationQualifier(
             LocationServices.getFusedLocationProviderClient(this),
@@ -82,7 +80,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
     @SuppressLint("MissingPermission")
     private fun requestPermission() {
-        // может быть дан пермишен, но геолокация может быть отключена на телефоне
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -93,8 +90,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
             qualifier.qualifyUserLocation {
                 OriginLatLng.saveOriginLatLng(it)
             }
-            // убрать return
-            return
         } else {
             requestPermissions(
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -113,7 +108,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 requestPermission()
             } else {
-                // Показать ошибку если пермишены не были даны
+                showErrorToast(R.string.error_missing_permission_toast)
             }
         }
     }
@@ -129,8 +124,8 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         }
     }
 
-    override fun showErrorToast() {
-        Toast.makeText(this, R.string.error_toast, Toast.LENGTH_SHORT).show()
+    override fun showErrorToast(errorMessage: Int) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
     override fun moveCamera(startPosition: CameraPosition) {
@@ -142,63 +137,50 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         presenter.onMarkerClicked(carId)
-        removePreviousPolyline()
-
+        polyline?.remove()
         return true
     }
 
-    private fun removePreviousPolyline() {
-        if (polyline != null) { // лишний if
-            polyline?.remove()
-        }
-    }
+    override fun updateBottomSheet(carCardViewModel: CarCardViewModel) {
+        val car = carCardViewModel.car
 
-    override fun updateBottomSheet(car: Car) {
-        // разобраться что случилось с байндингом, если успеешь
-        findViewById<TextView>(R.id.car_name_text_view).text = car.model
-        findViewById<TextView>(R.id.seats_text_view).text = car.seats.toString()
-        // убрать слэши "/" и использовать List<String>.joinToString()
-        findViewById<TextView>(R.id.remain_range_text_view).text =
-            car.remainRange.toString() + resources.getString(R.string.remain_range_measure)
+        val remainRangeList =
+            listOf(car.remainRange.toString(), resources.getString(R.string.remain_range_measure))
+
+        binding.apply {
+            remainRangeTextView.text =
+                remainRangeList.joinToString(separator = " ") { it }
+            carNameTextView.text = car.model
+            seatsTextView.text = car.seats.toString()
+            colorTextView.text =
+                resources.getString(carCardViewModel.colorRussianTitle)
+            carColorContainerImageView.setColorFilter(
+                ResourcesCompat.getColor(resources, carCardViewModel.colorCode, null)
+            )
+            transmissionTextView.text =
+                resources.getString(carCardViewModel.transmissionRussianTitle)
+        }
 
         setCarPicture(
-            findViewById(R.id.car_picture_image_view),
-            findViewById(R.id.shimmer_image_view),
-            findViewById(R.id.shimmer_frame_layout),
+            binding.carPictureImageView,
+            binding.shimmerImageView,
+            binding.shimmerFrameLayout,
             car.picture
         )
 
         setRegistrationNumber(
-            findViewById(R.id.registration_number_text_view),
+            binding.registrationNumberTextView,
             car.registrationNumber
         )
 
-        presenter.fromEnumToColor(car.color)
-        presenter.fromEnumToTransmission(car.transmission)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun showRoute(route: PolylineOptions, bounds: LatLngBounds) {
         polyline = map.addPolyline(route)
-        
+
         map.setPadding(0, 0, 0, mapPadding)
         map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, boundsPadding))
-    }
-
-    override fun setCarColorField(colorRussianTitle: Int, colorCode: Int) {
-        // Использовать ResourcesCompat.getColor()
-        val colorToDisplay = resources.getColor(colorCode)
-
-        findViewById<TextView>(R.id.color_text_view).text =
-            resources.getString(colorRussianTitle)
-        findViewById<ImageView>(R.id.car_color_container_image_view).setColorFilter(
-            colorToDisplay
-        )
-    }
-
-    override fun setCarTransmission(transmissionRussianTitle: Int) {
-        findViewById<TextView>(R.id.transmission_text_view).text =
-            resources.getString(transmissionRussianTitle)
     }
 
     override fun onDestroy() {

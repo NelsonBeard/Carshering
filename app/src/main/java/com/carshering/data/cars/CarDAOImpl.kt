@@ -15,38 +15,30 @@ class CarDAOImpl(
     private val handler: Handler,
     private val httpClient: HttpClient
 ) : CarDAO {
-    // есть два места хранения списка авто, нужно использовать одно
-    private lateinit var cars: List<Car>
-
-    override fun getAllCars(
+    override fun getAllCarsFromServer(
         onSuccess: (List<Car>) -> Unit,
         onError: (Exception) -> Unit
     ) {
         executor.execute {
             try {
                 val serverResponseData = httpClient.get(CAR_URL)
-                cars = JsonToCarListAdapter(serverResponseData).fromJson()
+                val cars = JsonToCarListAdapter(serverResponseData).fromJson()
 
-                saveCarsToLocalRepo(cars)
-                handOverToUIThreadSuccess(onSuccess)
+                localRepo.saveCars(cars)
+                handler.post { onSuccess(cars) }
             } catch (error: Exception) {
                 error.printStackTrace()
-                handOverToUIThreadError(onError)
+                handler.post { onError(Exception()) }
             }
         }
     }
 
-    // метод не нужен
-    override fun saveCarsToLocalRepo(cars: List<Car>) {
-        localRepo.saveCars(cars)
-    }
-
-    private fun handOverToUIThreadSuccess(onSuccess: (List<Car>) -> Unit) {
-        handler.post { onSuccess(cars) }
-    }
-
-    private fun handOverToUIThreadError(onError: (Exception) -> Unit) {
-        handler.post { onError(Exception()) }
+    override fun getSingleCarFromLocalRepo(clickedCarId: String): Car? {
+        val savedCars = localRepo.getCars()
+        val clickedCar = savedCars.firstOrNull {
+            clickedCarId == it.id
+        }
+        return clickedCar
     }
 }
 

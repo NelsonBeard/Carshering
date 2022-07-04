@@ -8,11 +8,13 @@ import org.json.JSONObject
 class JsonToRouteAdapter(
     private val json: JSONObject
 ) : JsonAdapter<Route> {
+
+    @Throws(JsonParseException::class)
     override fun fromJson(): Route {
         try {
             return Route(geometry = json.getString("geometry"))
         } catch (error: Exception) {
-            throw JsonParseException("Can't parse json")
+            throw JsonParseException("Can't parse json", error)
         }
     }
 }

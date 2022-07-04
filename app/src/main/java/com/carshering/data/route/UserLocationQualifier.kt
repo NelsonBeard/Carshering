@@ -12,12 +12,15 @@ class UserLocationQualifier(
 ) : UserPositionGetter {
 
     @SuppressLint("MissingPermission")
-    override fun qualifyUserLocation(onSuccess: (LatLng) -> Unit) {
+    override fun qualifyUserLocation(
+        onSuccess: (LatLng) -> Unit
+    ) {
         fusedLocationClient.lastLocation.addOnCompleteListener {
-
-            val originLatLng = LatLng(it.result.latitude, it.result.longitude)
-            handler.post {
-                onSuccess(originLatLng)
+            if (it.result != null) {
+                val originLatLng = LatLng(it.result.latitude, it.result.longitude)
+                handler.post {
+                    onSuccess(originLatLng)
+                }
             }
         }
     }

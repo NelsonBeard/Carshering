@@ -23,5 +23,4 @@ class JsonToCarListAdapter(
     private fun convertStringToJsonArray(): JSONArray {
         return JSONObject(serverResponseData).getJSONArray("cars")
     }
-
 }
