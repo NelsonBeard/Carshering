@@ -1,9 +1,7 @@
 package com.carshering.ui
 
-import android.os.Handler
-import android.os.Looper
 import com.carshering.R
-import com.carshering.data.HttpClient
+import com.carshering.data.RetrofitClient
 import com.carshering.data.StartPositionManual
 import com.carshering.data.cars.*
 import com.carshering.data.route.OriginLatLng
@@ -12,23 +10,19 @@ import com.carshering.domain.entity.CarCardViewModel
 import com.carshering.domain.usecase.cars.CarDAO
 import com.carshering.domain.usecase.route.RouteDAO
 import com.google.android.gms.maps.model.LatLng
-import java.util.concurrent.Executors
 
 class Presenter : Contract.Presenter {
-
+    private val retrofitClient = RetrofitClient().createRetrofit()
     private var view: Contract.View? = null
+
     private val carDAO: CarDAO =
         CarDAOImpl(
             CarsLocalRepository,
-            Executors.newSingleThreadExecutor(),
-            Handler(Looper.getMainLooper()),
-            HttpClient()
+            retrofitClient
         )
     private val routeDAO: RouteDAO =
         RouteDaoImpl(
-            HttpClient(),
-            Executors.newSingleThreadExecutor(),
-            Handler(Looper.getMainLooper())
+            retrofitClient
         )
 
     override fun onAttach(view: Contract.View) {
@@ -41,7 +35,7 @@ class Presenter : Contract.Presenter {
                 view?.putMarkers(it)
             },
             {
-                view?.showErrorToast(errorMessage = R.string.error_cant_get_data_toast)
+                view?.showErrorToast(errorMessage = it)
             }
         )
     }
@@ -68,7 +62,7 @@ class Presenter : Contract.Presenter {
                     R.string.empty_transmission
                 )
             )
-            val destinationLatLng = LatLng(clickedCar.lat, clickedCar.lng)
+            val destinationLatLng = LatLng(clickedCar.location.lat, clickedCar.location.lng)
             requestRoute(destinationLatLng)
             clickedCar.let { view?.updateBottomSheet(bottomSheetViewModel) }
         }
@@ -85,7 +79,7 @@ class Presenter : Contract.Presenter {
                     view?.showRoute(it.first, it.second)
                 },
                 {
-                    view?.showErrorToast(errorMessage = R.string.error_cant_get_route_toast)
+                    view?.showErrorToast(errorMessage = it)
                 }
             )
         }

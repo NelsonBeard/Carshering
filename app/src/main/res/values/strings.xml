@@ -2,6 +2,7 @@
     <string name="app_name">Carshering</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="error_cant_get_data_toast">Не удалось загрузить данные</string>
+    <string name="error_no_internet_connection_toast">Нет подключения к сети</string>
     <string name="error_cant_get_route_toast">Не удалось получить маршрут</string>
     <string name="error_missing_permission_toast">Без местоположеня пользователя невозможно построение маршрута</string>
     <string name="car_picture_description">Car picture</string>

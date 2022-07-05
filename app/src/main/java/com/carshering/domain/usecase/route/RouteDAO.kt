@@ -9,6 +9,6 @@ interface RouteDAO {
         originLatLng: LatLng,
         destinationLatLng: LatLng,
         onSuccess: (Pair<PolylineOptions, LatLngBounds>) -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Int) -> Unit
     )
 }

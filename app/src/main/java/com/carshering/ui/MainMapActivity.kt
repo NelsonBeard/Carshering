@@ -115,7 +115,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
     override fun putMarkers(cars: List<Car>) {
         cars.forEach { car ->
-            val latLng = LatLng(car.lat, car.lng)
+            val latLng = LatLng(car.location.lat, car.location.lng)
             val marker = map.addMarker(
                 MarkerOptions()
                     .position(latLng)

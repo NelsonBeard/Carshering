@@ -37,10 +37,17 @@ android {
 
 dependencies {
 
+    //Coil
     implementation("io.coil-kt:coil:1.4.0")
 
+    //Shimmer
     implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
     implementation 'com.google.maps.android:android-maps-utils:2.3.0'
+
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
