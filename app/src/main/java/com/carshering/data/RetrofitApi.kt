@@ -1,15 +1,14 @@
 package com.carshering.data
 
-import com.carshering.domain.entity.CarsFromServer
-import com.carshering.domain.entity.RoutesFromServer
-import retrofit2.Call
+import com.carshering.domain.entity.CarsDataFromServer
+import com.carshering.domain.entity.RoutesDataFromServer
 import retrofit2.http.GET
 import retrofit2.http.Url
 
 interface RetrofitApi {
     @GET
-    fun getCars(@Url url: String): Call<CarsFromServer>
+    suspend fun getCars(@Url url: String): CarsDataFromServer
 
     @GET
-    fun getRoute(@Url url: String): Call<RoutesFromServer>
+    suspend fun getRoute(@Url url: String): RoutesDataFromServer
 }

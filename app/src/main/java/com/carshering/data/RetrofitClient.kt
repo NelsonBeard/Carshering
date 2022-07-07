@@ -6,10 +6,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitClient {
 
     fun createRetrofit(): RetrofitApi {
-        val retrofit = Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl("https://raw.githubusercontent.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        return retrofit.create(RetrofitApi::class.java)
+            .create(RetrofitApi::class.java)
     }
 }

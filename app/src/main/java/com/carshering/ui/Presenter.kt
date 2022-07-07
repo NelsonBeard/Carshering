@@ -1,7 +1,7 @@
 package com.carshering.ui
 
 import com.carshering.R
-import com.carshering.data.RetrofitClient
+import com.carshering.StoreGraph
 import com.carshering.data.StartPositionManual
 import com.carshering.data.cars.*
 import com.carshering.data.route.OriginLatLng
@@ -10,19 +10,25 @@ import com.carshering.domain.entity.CarCardViewModel
 import com.carshering.domain.usecase.cars.CarDAO
 import com.carshering.domain.usecase.route.RouteDAO
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class Presenter : Contract.Presenter {
-    private val retrofitClient = RetrofitClient().createRetrofit()
+    private val scope = CoroutineScope(Dispatchers.Main)
+    private val store = StoreGraph
     private var view: Contract.View? = null
 
     private val carDAO: CarDAO =
         CarDAOImpl(
             CarsLocalRepository,
-            retrofitClient
+            store,
+            scope
         )
+
     private val routeDAO: RouteDAO =
         RouteDaoImpl(
-            retrofitClient
+            store,
+            scope
         )
 
     override fun onAttach(view: Contract.View) {
@@ -74,7 +80,6 @@ class Presenter : Contract.Presenter {
             routeDAO.getRoute(
                 originLatLngGoogleMap,
                 destinationLatLngGoogleMap,
-
                 {
                     view?.showRoute(it.first, it.second)
                 },
