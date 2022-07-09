@@ -5,7 +5,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 
 interface RouteDAO {
-    fun getRoute(
+    suspend fun getRoute(
         originLatLng: LatLng,
         destinationLatLng: LatLng,
         onSuccess: (Pair<PolylineOptions, LatLngBounds>) -> Unit,

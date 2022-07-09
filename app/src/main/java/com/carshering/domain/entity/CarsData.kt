@@ -2,7 +2,7 @@ package com.carshering.domain.entity
 
 import com.google.gson.annotations.SerializedName
 
-data class CarsDataFromServer(
+data class CarsData(
     @SerializedName("cars") val cars: List<Car>
 )
 

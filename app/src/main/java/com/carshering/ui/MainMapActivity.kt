@@ -15,8 +15,8 @@ import com.carshering.R
 import com.carshering.data.route.OriginLatLng
 import com.carshering.data.route.UserLocationQualifier
 import com.carshering.databinding.ActivityMainMapBinding
-import com.carshering.domain.entity.CarCardViewModel
 import com.carshering.domain.entity.Car
+import com.carshering.domain.entity.CarCardViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -24,6 +24,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
@@ -37,6 +40,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
     private var polyline: Polyline? = null
     private val presenter = Presenter()
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     private val mapPadding by lazy { resources.getDimension(R.dimen.map_bottom_padding).toInt() }
     private val boundsPadding by lazy { resources.getDimension(R.dimen.bounds_padding).toInt() }
@@ -72,7 +76,9 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         map = googleMap
 
         presenter.requestStartPosition()
-        presenter.requestCars()
+        scope.launch {
+            presenter.requestCars()
+        }
         requestPermission()
 
         map.setOnMarkerClickListener(this)
@@ -136,7 +142,9 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         val carId = marker.tag.toString()
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        presenter.onMarkerClicked(carId)
+        scope.launch {
+            presenter.onMarkerClicked(carId)
+        }
         polyline?.remove()
         return true
     }

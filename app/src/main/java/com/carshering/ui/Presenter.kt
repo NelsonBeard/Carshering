@@ -3,40 +3,30 @@ package com.carshering.ui
 import com.carshering.R
 import com.carshering.StoreGraph
 import com.carshering.data.StartPositionManual
-import com.carshering.data.cars.*
+import com.carshering.data.cars.CarDAOImpl
+import com.carshering.data.cars.colorsCodeMap
+import com.carshering.data.cars.colorsRussianTitleMap
+import com.carshering.data.cars.transmissionsMap
 import com.carshering.data.route.OriginLatLng
 import com.carshering.data.route.RouteDaoImpl
 import com.carshering.domain.entity.CarCardViewModel
 import com.carshering.domain.usecase.cars.CarDAO
 import com.carshering.domain.usecase.route.RouteDAO
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 class Presenter : Contract.Presenter {
-    private val scope = CoroutineScope(Dispatchers.Main)
     private val store = StoreGraph
     private var view: Contract.View? = null
 
-    private val carDAO: CarDAO =
-        CarDAOImpl(
-            CarsLocalRepository,
-            store,
-            scope
-        )
-
-    private val routeDAO: RouteDAO =
-        RouteDaoImpl(
-            store,
-            scope
-        )
+    private val carDAO: CarDAO = CarDAOImpl(store)
+    private val routeDAO: RouteDAO = RouteDaoImpl(store)
 
     override fun onAttach(view: Contract.View) {
         this.view = view
     }
 
-    override fun requestCars() {
-        carDAO.getAllCarsFromServer(
+    override suspend fun requestCars() {
+        carDAO.getAllCars(
             {
                 view?.putMarkers(it)
             },
@@ -51,9 +41,9 @@ class Presenter : Contract.Presenter {
         view?.moveCamera(startPosition)
     }
 
-    override fun onMarkerClicked(clickedCarId: String) {
+    override suspend fun onMarkerClicked(clickedCarId: String) {
 
-        val clickedCar = carDAO.getSingleCarFromLocalRepo(clickedCarId)
+        val clickedCar = carDAO.getSingleCar(clickedCarId)
 
         if (clickedCar != null) {
             val bottomSheetViewModel = CarCardViewModel(
@@ -68,15 +58,17 @@ class Presenter : Contract.Presenter {
                     R.string.empty_transmission
                 )
             )
+
             val destinationLatLng = LatLng(clickedCar.location.lat, clickedCar.location.lng)
             requestRoute(destinationLatLng)
             clickedCar.let { view?.updateBottomSheet(bottomSheetViewModel) }
         }
     }
 
-    override fun requestRoute(destinationLatLngGoogleMap: LatLng) {
+    override suspend fun requestRoute(destinationLatLngGoogleMap: LatLng) {
         if (OriginLatLng.isExist()) {
             val originLatLngGoogleMap = OriginLatLng.getOriginLatLng()
+
             routeDAO.getRoute(
                 originLatLngGoogleMap,
                 destinationLatLngGoogleMap,
