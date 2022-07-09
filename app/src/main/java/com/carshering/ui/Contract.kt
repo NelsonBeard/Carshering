@@ -19,10 +19,10 @@ class Contract {
 
     interface Presenter {
         fun onAttach(view: View)
-        suspend fun requestCars()
+        fun requestCars()
         fun requestStartPosition()
-        suspend fun requestRoute(destinationLatLng: LatLng)
-        suspend fun onMarkerClicked(clickedCarId: String)
+        fun requestRoute(destinationLatLng: LatLng)
+        fun onMarkerClicked(clickedCarId: String)
         fun onDetach(view: View)
     }
 }

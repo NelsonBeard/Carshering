@@ -26,7 +26,6 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
@@ -40,7 +39,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
 
     private var polyline: Polyline? = null
     private val presenter = Presenter()
-    private val scope = CoroutineScope(Dispatchers.Main)
 
     private val mapPadding by lazy { resources.getDimension(R.dimen.map_bottom_padding).toInt() }
     private val boundsPadding by lazy { resources.getDimension(R.dimen.bounds_padding).toInt() }
@@ -76,9 +74,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         map = googleMap
 
         presenter.requestStartPosition()
-        scope.launch {
-            presenter.requestCars()
-        }
+        presenter.requestCars()
         requestPermission()
 
         map.setOnMarkerClickListener(this)
@@ -142,9 +138,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         val carId = marker.tag.toString()
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        scope.launch {
-            presenter.onMarkerClicked(carId)
-        }
+        presenter.onMarkerClicked(carId)
         polyline?.remove()
         return true
     }

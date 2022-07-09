@@ -6,6 +6,8 @@ import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.cars.CarDAO
 import com.dropbox.android.external.store4.get
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 const val CAR_URL =
     "https://raw.githubusercontent.com/NelsonBeard/CarsheringAPI/master/cars.json"
@@ -13,26 +15,33 @@ const val CAR_URL =
 class CarDAOImpl(
     private val store: StoreGraph
 ) : CarDAO {
+    private val scope = CoroutineScope(Dispatchers.Main)
 
-    override suspend fun getAllCars(
+    override fun getAllCars(
         onSuccess: (List<Car>) -> Unit,
         onError: (Int) -> Unit
     ) {
-        try {
-            val carsData = store.provideCarsStore().get(CAR_URL)
-            onSuccess(carsData.cars)
-        } catch (error: Exception) {
-            onError(R.string.error_cant_get_data_toast)
+        scope.launch {
+            try {
+                val carsData = store.provideCarsStore().get(CAR_URL)
+                onSuccess(carsData.cars)
+            } catch (error: Exception) {
+                onError(R.string.error_cant_get_data_toast)
+            }
         }
-
     }
 
-    override suspend fun getSingleCar(clickedCarId: String): Car? {
-        val allCars = store.provideCarsStore().get(CAR_URL).cars
-        val clickedCar = allCars.firstOrNull {
-            clickedCarId == it.id
+    override fun getSingleCar(
+        clickedCarId: String,
+        onSuccess: (Car?) -> Unit
+    ) {
+        scope.launch {
+            val allCars = store.provideCarsStore().get(CAR_URL).cars
+            val clickedCar = allCars.firstOrNull {
+                clickedCarId == it.id
+            }
+            onSuccess(clickedCar)
         }
-        return clickedCar
     }
 }
 
