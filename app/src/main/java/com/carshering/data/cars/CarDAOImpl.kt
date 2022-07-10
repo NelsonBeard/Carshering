@@ -1,50 +1,47 @@
 package com.carshering.data.cars
 
-import android.os.Handler
-import com.carshering.data.HttpClient
+import com.carshering.R
+import com.carshering.StoreGraph
 import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.cars.CarDAO
-import java.util.concurrent.Executor
+import com.dropbox.android.external.store4.get
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 const val CAR_URL =
     "https://raw.githubusercontent.com/NelsonBeard/CarsheringAPI/master/cars.json"
 
 class CarDAOImpl(
-    private val localRepo: CarsLocalRepository,
-    private val executor: Executor,
-    private val handler: Handler,
-    private val httpClient: HttpClient
+    private val store: StoreGraph
 ) : CarDAO {
-    private lateinit var cars: List<Car>
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun getAllCars(
         onSuccess: (List<Car>) -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Int) -> Unit
     ) {
-        executor.execute {
+        scope.launch {
             try {
-                val serverResponseData = httpClient.get(CAR_URL)
-                cars = JsonToCarListAdapter(serverResponseData).fromJson()
-
-                saveCarsToLocalRepo(cars)
-                handOverToUIThreadSuccess(onSuccess)
+                val carsData = store.provideCarsStore().get(CAR_URL)
+                onSuccess(carsData.cars)
             } catch (error: Exception) {
-                error.printStackTrace()
-                handOverToUIThreadError(onError)
+                onError(R.string.error_cant_get_data_toast)
             }
         }
     }
 
-    override fun saveCarsToLocalRepo(cars: List<Car>) {
-        localRepo.saveCars(cars)
-    }
-
-    private fun handOverToUIThreadSuccess(onSuccess: (List<Car>) -> Unit) {
-        handler.post { onSuccess(cars) }
-    }
-
-    private fun handOverToUIThreadError(onError: (Exception) -> Unit) {
-        handler.post { onError(Exception()) }
+    override fun getSingleCar(
+        clickedCarId: String,
+        onSuccess: (Car?) -> Unit
+    ) {
+        scope.launch {
+            val allCars = store.provideCarsStore().get(CAR_URL).cars
+            val clickedCar = allCars.firstOrNull {
+                clickedCarId == it.id
+            }
+            onSuccess(clickedCar)
+        }
     }
 }
 

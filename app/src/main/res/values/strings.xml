@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Carshering</string>
     <string name="title_activity_maps">MapsActivity</string>
-    <string name="error_toast">Не удалось загрузить данные</string>
+    <string name="error_cant_get_data_toast">Не удалось загрузить данные</string>
+    <string name="error_no_internet_connection_toast">Нет подключения к сети</string>
+    <string name="error_cant_get_route_toast">Не удалось получить маршрут</string>
+    <string name="error_missing_permission_toast">Без местоположеня пользователя невозможно построение маршрута</string>
     <string name="car_picture_description">Car picture</string>
     <string name="car_name_tool_text">Renault Arkana</string>
     <string name="remain_range_tool_text">150 км</string>
@@ -9,7 +12,7 @@
     <string name="color_tool_text">Красный</string>
     <string name="transmission_tool_text">Автоматическая</string>
     <string name="registration_number_tool_text">A000AA777</string>
-    <string name="remain_range_measure">\ км\</string>
+    <string name="remain_range_measure">км</string>
     <string name="color_white_ru">Белый</string>
     <string name="color_black_ru">Черный</string>
     <string name="color_red_ru">Красный</string>

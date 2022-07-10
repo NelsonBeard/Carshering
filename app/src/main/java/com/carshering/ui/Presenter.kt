@@ -1,48 +1,46 @@
 package com.carshering.ui
 
-import android.os.Handler
-import android.os.Looper
 import com.carshering.R
-import com.carshering.data.HttpClient
+import com.carshering.StoreGraph
 import com.carshering.data.StartPositionManual
-import com.carshering.data.cars.*
-import com.carshering.data.route.GoogleMapToMapboxLatLngAdapter
+import com.carshering.data.cars.CarDAOImpl
+import com.carshering.data.cars.colorsCodeMap
+import com.carshering.data.cars.colorsRussianTitleMap
+import com.carshering.data.cars.transmissionsMap
 import com.carshering.data.route.OriginLatLng
 import com.carshering.data.route.RouteDaoImpl
+import com.carshering.domain.entity.CarCardViewModel
+import com.carshering.domain.usecase.cars.CarDAO
+import com.carshering.domain.usecase.route.RouteDAO
 import com.google.android.gms.maps.model.LatLng
-import java.util.concurrent.Executors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class Presenter : Contract.Presenter {
-
+    private val store = StoreGraph
     private var view: Contract.View? = null
-    private val carDAOImpl =
-        CarDAOImpl(
-            CarsLocalRepository,
-            Executors.newSingleThreadExecutor(),
-            Handler(Looper.getMainLooper()),
-            HttpClient()
-        )
-    private val routeDaoImpl =
-        RouteDaoImpl(
-            HttpClient(),
-            Executors.newSingleThreadExecutor(),
-            Handler(Looper.getMainLooper()),
-            GoogleMapToMapboxLatLngAdapter()
-        )
+    private val scope = CoroutineScope(Dispatchers.Main)
+
+    private val carDAO: CarDAO = CarDAOImpl(store)
+    private val routeDAO: RouteDAO = RouteDaoImpl(store)
 
     override fun onAttach(view: Contract.View) {
         this.view = view
     }
 
     override fun requestCars() {
-        carDAOImpl.getAllCars(
-            {
-                view?.putMarkers(it)
-            },
-            {
-                view?.showErrorToast()
-            }
-        )
+        scope.launch {
+            carDAO.getAllCars(
+                {
+                    view?.putMarkers(it)
+                },
+                {
+                    view?.showErrorToast(errorMessage = it)
+                }
+            )
+        }
     }
 
     override fun requestStartPosition() {
@@ -51,50 +49,49 @@ class Presenter : Contract.Presenter {
     }
 
     override fun onMarkerClicked(clickedCarId: String) {
-        val savedCars = CarsLocalRepository.getCars()
-        val clickedCar = savedCars?.firstOrNull {
-            clickedCarId == it.id
-        }
+        scope.launch {
+            carDAO.getSingleCar(clickedCarId) {
+                if (it != null) {
+                    val bottomSheetViewModel =
+                        CarCardViewModel(
+                            car = it,
+                            colorRussianTitle = colorsRussianTitleMap.getOrDefault(
+                                it.color,
+                                R.string.empty_color
+                            ),
+                            colorCode = colorsCodeMap.getOrDefault(it.color, R.color.empty_color),
+                            transmissionRussianTitle = transmissionsMap.getOrDefault(
+                                it.transmission,
+                                R.string.empty_transmission
+                            )
+                        )
 
-        if (clickedCar != null) {
-            val destinationLatLng = LatLng(clickedCar.lat, clickedCar.lng)
-
-            requestRoute(destinationLatLng)
-            clickedCar.let { view?.updateBottomSheet(it) }
-        }
-
-    }
-
-    override fun requestRoute(destinationLatLngGoogleMap: LatLng?) {
-        val originLatLngGoogleMap = OriginLatLng.getOriginLatLng()
-
-        routeDaoImpl.getRoute(
-            originLatLngGoogleMap,
-            destinationLatLngGoogleMap,
-
-            {
-                view?.showRoute(it.first, it.second)
-            },
-            {
-                //Nothing to do
+                    val destinationLatLng = LatLng(it.location.lat, it.location.lng)
+                    requestRoute(destinationLatLng)
+                    it.let { view?.updateBottomSheet(bottomSheetViewModel) }
+                }
             }
-        )
+        }
     }
 
-    override fun fromEnumToColor(colorENUM: String) {
-        val colorRussianTitle = colorsRussianTitleMap.getOrDefault(colorENUM, R.string.empty_color)
-        val colorCode = colorsCodeMap.getOrDefault(colorENUM, R.color.empty_color)
-        view?.setCarColorField(colorRussianTitle, colorCode)
-    }
-
-    override fun fromEnumToTransmission(transmissionENUM: String) {
-        val transmissionRussianTitle =
-            transmissionsMap.getOrDefault(transmissionENUM, R.string.empty_transmission)
-        view?.setCarTransmission(transmissionRussianTitle)
+    override fun requestRoute(destinationLatLngGoogleMap: LatLng) {
+        if (OriginLatLng.isExist()) {
+            val originLatLngGoogleMap = OriginLatLng.getOriginLatLng()
+            routeDAO.getRoute(
+                originLatLngGoogleMap,
+                destinationLatLngGoogleMap,
+                {
+                    view?.showRoute(it.first, it.second)
+                },
+                {
+                    view?.showErrorToast(errorMessage = it)
+                }
+            )
+        }
     }
 
     override fun onDetach(view: Contract.View) {
         this.view = null
+        scope.cancel()
     }
-
 }
