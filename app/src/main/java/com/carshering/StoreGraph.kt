@@ -11,11 +11,12 @@ import com.dropbox.android.external.store4.Store
 import com.dropbox.android.external.store4.StoreBuilder
 
 class StoreGraph(
-    private val retrofit: RetrofitApi
+    private val retrofit: RetrofitApi,
+    private val carsDataLocal: CarsDataLocal,
+    private val routesDataLocal: RoutesDataLocal
 ) {
 
     fun provideCarsStore(): Store<String, CarsData> {
-        val cdl = CarsDataLocal
 
         return StoreBuilder
             .from(
@@ -23,15 +24,14 @@ class StoreGraph(
                     retrofit.getCars(url)
                 },
                 sourceOfTruth = SourceOfTruth.of(
-                    nonFlowReader = { cdl.loadCarsData() },
-                    writer = { _, carsData: CarsData -> cdl.saveCarsData(carsData) }
+                    nonFlowReader = { carsDataLocal.loadCarsData() },
+                    writer = { _, carsData: CarsData -> carsDataLocal.saveCarsData(carsData) }
                 )
             )
             .build()
     }
 
     fun provideRoutesStore(): Store<String, RoutesData> {
-        val rdl = RoutesDataLocal
 
         return StoreBuilder
             .from(
@@ -39,8 +39,13 @@ class StoreGraph(
                     retrofit.getRoute(url)
                 },
                 sourceOfTruth = SourceOfTruth.of(
-                    nonFlowReader = { key -> rdl.loadRoutesData(key) },
-                    writer = { key, routes: RoutesData -> rdl.saveRoutesData(key, routes) }
+                    nonFlowReader = { key -> routesDataLocal.loadRoutesData(key) },
+                    writer = { key, routes: RoutesData ->
+                        routesDataLocal.saveRoutesData(
+                            key,
+                            routes
+                        )
+                    }
                 )
             )
             .build()
