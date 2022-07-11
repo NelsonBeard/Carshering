@@ -24,8 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import org.koin.android.ext.android.inject
 
 const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
@@ -38,7 +37,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
     private lateinit var qualifier: UserLocationQualifier
 
     private var polyline: Polyline? = null
-    private val presenter = Presenter()
+    private val presenter: Presenter by inject()
 
     private val mapPadding by lazy { resources.getDimension(R.dimen.map_bottom_padding).toInt() }
     private val boundsPadding by lazy { resources.getDimension(R.dimen.bounds_padding).toInt() }
@@ -70,6 +69,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback, Contract.View,
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 

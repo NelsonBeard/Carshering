@@ -15,11 +15,10 @@ private const val ACCESS_TOKEN =
     "pk.eyJ1IjoiYmVsa2FjYXIiLCJhIjoiY2w0NDhoZGN4MWRyeDNpcXRzeXVlYm8ybSJ9.tUK_nkBXhe7eXF8dld3BjA"
 
 class RouteDaoImpl(
-    private val store: StoreGraph
+    private val store: StoreGraph,
+    private val scope: CoroutineScope,
+    private val latLngAdapter: GoogleMapToMapboxLatLngAdapter
 ) : RouteDAO {
-
-    private val latLngAdapter: GoogleMapToMapboxLatLngAdapter = GoogleMapToMapboxLatLngAdapter()
-    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun getRoute(
         originLatLngGoogle: LatLng,
