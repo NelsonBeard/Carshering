@@ -6,16 +6,15 @@ import com.carshering.domain.entity.Car
 import com.carshering.domain.usecase.cars.CarDAO
 import com.dropbox.android.external.store4.get
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 const val CAR_URL =
     "https://raw.githubusercontent.com/NelsonBeard/CarsheringAPI/master/cars.json"
 
 class CarDAOImpl(
+    private val scope: CoroutineScope,
     private val store: StoreGraph
 ) : CarDAO {
-    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun getAllCars(
         onSuccess: (List<Car>) -> Unit,

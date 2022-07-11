@@ -1,7 +1,6 @@
 package com.carshering.ui
 
 import com.carshering.R
-import com.carshering.StoreGraph
 import com.carshering.data.StartPositionManual
 import com.carshering.data.cars.CarDAOImpl
 import com.carshering.data.cars.colorsCodeMap
@@ -10,21 +9,17 @@ import com.carshering.data.cars.transmissionsMap
 import com.carshering.data.route.OriginLatLng
 import com.carshering.data.route.RouteDaoImpl
 import com.carshering.domain.entity.CarCardViewModel
-import com.carshering.domain.usecase.cars.CarDAO
-import com.carshering.domain.usecase.route.RouteDAO
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class Presenter : Contract.Presenter {
-    private val store = StoreGraph
-    private var view: Contract.View? = null
-    private val scope = CoroutineScope(Dispatchers.Main)
-
-    private val carDAO: CarDAO = CarDAOImpl(store)
-    private val routeDAO: RouteDAO = RouteDaoImpl(store)
+class Presenter(
+    private val carDAO: CarDAOImpl,
+    private val routeDAO: RouteDaoImpl,
+    private val scope: CoroutineScope,
+    private var view: Contract.View?
+) : Contract.Presenter {
 
     override fun onAttach(view: Contract.View) {
         this.view = view

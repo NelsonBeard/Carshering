@@ -1,7 +1,6 @@
 package com.carshering
 
 import com.carshering.data.RetrofitApi
-import com.carshering.data.RetrofitClient
 import com.carshering.data.cars.CarsDataLocal
 import com.carshering.data.route.RoutesDataLocal
 import com.carshering.domain.entity.CarsData
@@ -11,8 +10,9 @@ import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.Store
 import com.dropbox.android.external.store4.StoreBuilder
 
-object StoreGraph {
-    private val retrofit: RetrofitApi = RetrofitClient().createRetrofit()
+class StoreGraph(
+    private val retrofit: RetrofitApi
+) {
 
     fun provideCarsStore(): Store<String, CarsData> {
         val cdl = CarsDataLocal
